@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI name="NXSeedDlgFrame" onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement profile="newLayer" />
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+
+    <GuiElement profile="NXSeedDialog" id="dialogElement">
+        <GuiElement profile="fs25_dialogContentContainer">
+            <BoxLayout profile="NXSeedDialogVerticalBox">
+                <ThreePartBitmap profile="NXSeedTitleBg">
+                    <Text profile="NXSeedTitleText" text="" id="dialogTitleElement" />
+                </ThreePartBitmap>
+
+                <ThreePartBitmap profile="NXSeedPanelBg">
+                    <BoxLayout profile="NXSeedPanelVerticalBox">
+                        <ThreePartBitmap profile="NXSeedHeaderBg">
+                            <BoxLayout profile="NXSeedHeaderBox">
+                                <Text profile="NXSeedHeaderCellFruit" id="seedHeaderFruit" />
+                                <Text profile="NXSeedHeaderCellValue" id="seedHeaderConsume" />
+                            </BoxLayout>
+                        </ThreePartBitmap>
+
+                        <GuiElement profile="NXSeedListWrapper">
+                            <SmoothList profile="NXSeedList" id="nxSeedTable">
+                                <ListItem profile="NXSeedListItem" name="nxSeedRowTemplate">
+                                    <Text profile="NXSeedFruitCell" position="14px 0px"  size="200px 38px" name="fruit" />
+                                    <Text profile="NXSeedValueCell" position="220px 0px" size="180px 38px" name="consume" />
+                                </ListItem>
+                            </SmoothList>
+
+                            <ThreePartBitmap profile="NXSeedSliderDocked">
+                                <Slider profile="NXSeedSlider" dataElementId="nxSeedTable" id="seedTableSlider" />
+                            </ThreePartBitmap>
+                        </GuiElement>
+                    </BoxLayout>
+                </ThreePartBitmap>
+
+                <GuiElement profile="NXSeedBottomBar">
+                    <ThreePartBitmap profile="NXSeedCloseBg">
+                        <Button profile="NXSeedCloseButton" onClick="onClickBack" id="closeButton" />
+                    </ThreePartBitmap>
+                </GuiElement>
+            </BoxLayout>
+        </GuiElement>
+    </GuiElement>
+
+    <GUIProfiles>
+        <Profile name="NXSeedDialog" extends="fs25_dialogBg">
+            <size value="560px 700px" />
+        </Profile>
+
+        <Profile name="NXSeedDialogVerticalBox" extends="emptyPanel" with="anchorMiddleCenter">
+            <position value="0px -6px" />
+            <size value="460px 600px" />
+            <flowDirection value="vertical" />
+            <useFullVisibility value="false" />
+            <alignmentX value="center" />
+            <alignmentY value="middle" />
+            <elementSpacing value="10px" />
+        </Profile>
+
+        <Profile name="NXSeedTitleBg" extends="fs25_textInputBg" with="anchorMiddleCenter">
+            <size value="460px 50px" />
+        </Profile>
+
+        <Profile name="NXSeedTitleText" extends="baseReference">
+            <size value="428px 50px" />
+            <position value="16px 0px" />
+            <textSize value="18px" />
+            <textBold value="true" />
+            <textUpperCase value="true" />
+            <textAlignment value="center" />
+            <textVerticalAlignment value="middle" />
+            <textColor value="1 1 1 1" />
+        </Profile>
+
+        <Profile name="NXSeedPanelBg" extends="fs25_textInputBg" with="anchorMiddleCenter">
+            <size value="460px 458px" />
+        </Profile>
+
+        <Profile name="NXSeedPanelVerticalBox" extends="emptyPanel" with="anchorMiddleCenter">
+            <size value="430px 424px" />
+            <flowDirection value="vertical" />
+            <useFullVisibility value="false" />
+            <alignmentX value="center" />
+            <alignmentY value="middle" />
+            <elementSpacing value="8px" />
+        </Profile>
+
+        <Profile name="NXSeedHeaderBg" extends="fs25_textInputBg">
+            <size value="430px 40px" />
+        </Profile>
+
+        <Profile name="NXSeedHeaderBox" extends="emptyPanel" with="anchorMiddleCenter">
+            <size value="408px 40px" />
+            <flowDirection value="horizontal" />
+            <useFullVisibility value="false" />
+            <alignmentX value="left" />
+            <alignmentY value="middle" />
+            <elementSpacing value="0px" />
+        </Profile>
+
+        <Profile name="NXSeedListWrapper" extends="fs25_textInputBg" with="anchorTopLeft pivotTopLeft">
+            <size value="430px 368px" />
+        </Profile>
+
+        <Profile name="NXSeedList" extends="emptyPanel" with="anchorTopLeft pivotTopLeft">
+            <position value="10px 8px" />
+            <size value="402px 352px" />
+        </Profile>
+
+        <Profile name="NXSeedListItem" extends="baseReference" with="anchorTopStretchingX alternating">
+            <height value="38px" />
+            <imageColor value="$preset_fs25_colorGrey" />
+            <imageSelectedColor value="$preset_fs25_colorMainHighlight" />
+            <alternateBackgroundColor value="$preset_fs25_colorGreyDark_50" />
+        </Profile>
+
+        <Profile name="NXSeedSliderDocked" extends="fs25_listSliderBox" with="anchorTopLeft pivotTopLeft">
+            <position value="414px 8px" />
+            <size value="8px 352px" />
+        </Profile>
+
+        <Profile name="NXSeedSlider" extends="fs25_listSlider" with="anchorTopLeft pivotTopLeft">
+            <position value="2px 0px" />
+            <size value="8px 352px" />
+        </Profile>
+
+        <Profile name="NXSeedBottomBar" extends="emptyPanel" with="anchorMiddleCenter">
+            <size value="460px 48px" />
+        </Profile>
+
+        <Profile name="NXSeedCloseBg" extends="fs25_textInputBg" with="anchorMiddleRight pivotMiddleRight">
+            <position value="0px 0px" />
+            <size value="158px 44px" />
+        </Profile>
+
+        <Profile name="NXSeedCloseButton" extends="buttonBack" with="anchorMiddleCenter">
+            <position value="0px 0px" />
+            <size value="150px 34px" />
+            <textAlignment value="center" />
+            <textVerticalAlignment value="middle" />
+        </Profile>
+
+        <Profile name="NXSeedHeaderCellFruit" extends="fs25_textDarkHighlight">
+            <size value="220px 40px" />
+            <textSize value="16px" />
+            <textBold value="true" />
+            <textUpperCase value="false" />
+            <textAlignment value="left" />
+            <textVerticalAlignment value="middle" />
+        </Profile>
+
+        <Profile name="NXSeedHeaderCellValue" extends="fs25_textDarkHighlight">
+            <size value="180px 40px" />
+            <textSize value="16px" />
+            <textBold value="true" />
+            <textUpperCase value="false" />
+            <textAlignment value="right" />
+            <textVerticalAlignment value="middle" />
+        </Profile>
+
+        <Profile name="NXSeedFruitCell" extends="fs25_textDefault">
+            <textSize value="16px" />
+            <textBold value="false" />
+            <textUpperCase value="false" />
+            <textAlignment value="left" />
+            <textVerticalAlignment value="middle" />
+        </Profile>
+
+        <Profile name="NXSeedValueCell" extends="fs25_textDefault">
+            <textSize value="16px" />
+            <textBold value="false" />
+            <textUpperCase value="false" />
+            <textAlignment value="right" />
+            <textVerticalAlignment value="middle" />
+        </Profile>
+    </GUIProfiles>
+</GUI>

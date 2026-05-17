@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<l10n>
+  <texts>
+    <!-- ============================================================ -->
+    <!-- FarmKit - Tastenbelegung & Dialog                         -->
+    <!-- ============================================================ -->
+    <text name="input_SHOW_FARMKIT_DLG"    text="FarmKit" />
+    <text name="ui_farmKitDlg_title"        text="FarmKit" />
+    <text name="ui_ingameMenuFarmKit"       text="FarmKit" />
+
+    <text name="ui_farmKitDlg_btnShowSeeds" text="Saatgut anzeigen" />
+    <text name="ui_farmKitDlg_btnHideSeeds" text="Saatgut ausblenden" />
+    <text name="ui_seed_btn"                        text="Saatgut anzeigen" />
+
+    <!-- ============================================================ -->
+    <!-- Spaltenüberschriften                                          -->
+    <!-- ============================================================ -->
+    <text name="ui_seed_header_fruit"               text="Frucht" />
+    <text name="ui_seed_header_consume"             text="Bedarf" />
+
+    <text name="nx_header_field"                  text="Feld Nr." />
+    <text name="nx_section_yourFarm"              text="Dein Hof" />
+    <text name="nx_header_fertilizer"             text="Dünger" />
+    <text name="nx_header_liquidFertilizer"       text="Fl. Dünger" />
+
+    <!-- ============================================================ -->
+    <!-- Organischer Stickstoff-Modus (nur Precision Farming)          -->
+    <!-- ============================================================ -->
+    <text name="ui_organicNitrogenMode_label"       text="Organischer N-Modus" />
+    <text name="ui_organicNitrogenMode_soil"        text="Boden Zielwert" />
+    <text name="ui_organicNitrogenMode_plant"       text="Pflanzen Zielwert" />
+
+    <!-- ============================================================ -->
+    <!-- Saatgut-Ansicht Dialogtitel                                   -->
+    <!-- ============================================================ -->
+    <text name="ui_seedFrame_header"                text="Saatgutbedarf für Feld %s (%s %s)" />
+
+    <!-- ============================================================ -->
+    <!-- Einstellungsmenü - FarmKit-Bereich                         -->
+    <!-- ============================================================ -->
+    <text name="nx_setting_on"                    text="An" />
+    <text name="nx_setting_off"                   text="Aus" />
+
+    <text name="nx_menu_section_title"            text="NX FarmKit" />
+
+    <text name="nx_menu_mudSprayerEnabled"         text="Schlammphysik" />
+    <text name="nx_menu_mudSprayerEnabled_tooltip" text="Trockene/nasse Schlammpartikel sprühen bei Bodenkontakt von jedem Antriebsrad. Pflanzgeräte, Sämaschinen, Pflüge und andere Werkzeugkategorien werden ausgenommen." />
+
+    <text name="nx_menu_densityEnabled"            text="Bodenphysik" />
+    <text name="nx_menu_densityEnabled_tooltip"    text="Räder zerstören Gras- und Wiesenflächen außerhalb der Feldmaske. Fremde Feldfrüchte bleiben unberührt." />
+
+    <!-- ============================================================ -->
+    <!-- Einstellungsmenü - Staubmechanik-Bereich                       -->
+    <!-- ============================================================ -->
+    <text name="nx_menu_dustMechanics_section"    text="Staubmechanik" />
+
+    <text name="nx_menu_dustEnabled"              text="Staubmechanik" />
+    <text name="nx_menu_dustEnabled_tooltip"      text="Hauptschalter für das Staub-Skalierungssystem. Im Aus-Zustand wird das Standardverhalten der Spielpartikel auf allen Geräten wiederhergestellt." />
+
+    <text name="nx_menu_dustMultiplier"           text="Staub-Multiplikator" />
+    <text name="nx_menu_dustMultiplier_tooltip"   text="Globale Intensität aller Geräte-Staubeffekte (Pflug, Grubber, Mähdrescher, Mäher, Räder usw.). 100% entspricht dem Spielstandard, 200% ist der Mod-Standard." />
+
+    <text name="nx_menu_plowingEnabled"           text="Realistisches Pflügen" />
+    <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilisiert die Radphysik, wenn eine Traktorseite in eine Furche absinkt — schmalere Radkollision und stärkere Dämpfung auf der unteren Seite gegen unrealistisches Aufschaukeln." />
+
+    <text name="nx_menu_wheelPhysicsEnabled"         text="Realistische Radphysik" />
+    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Schlupf-gesteuerte Radphysik auf Feldboden: Grubber-Spuren, Bodenverformung, Grip-Reduktion, Einsinken und gedämpfte Federung. Diff/Allrad und Breit-/Raupenreifen reduzieren den Schaden; schwere/nasse Bedingungen senken den Schwellwert." />
+
+    <text name="nx_menu_hudEnabled"                  text="FarmKit HUD" />
+    <text name="nx_menu_hudEnabled_tooltip"          text="On-Screen FarmKit HUD — zeigt aktuell den Radschlupf in Prozent neben dem Tacho an (grün / gelb / rot)." />
+  </texts>
+</l10n>

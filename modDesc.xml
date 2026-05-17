@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="105">
+    <author>NX Modding</author>
+    <version>1.0.0.0</version>
+    <title>
+        <en>FarmKit</en>
+        <de>HofKit</de>
+        <fr>KitFerme</fr>
+    </title>
+    <description>
+        <en><![CDATA[Comprehensive field planning system for Farming Simulator 25.
+
+Features:
+• Field Overview: View every field with size, fertilizer, lime, herbicide and seed requirements at a glance
+• Material Coverage: Lime, mineral fertilizer, liquid fertilizer, manure, slurry, fermentation residue, herbicide and seed needs per field
+• Seed View: Toggle in the same dialog to see per-crop seed liters for the currently selected field
+• Custom Map Fertilizers: Automatically detects mod-map fertilizers declared in the map's sprayTypes
+• Precision Farming Support: Reads live PF soil/pH/nitrogen/cover maps for accurate per-field estimates
+• Organic Nitrogen Mode: Switch organic fertilizer calculations between soil target and plant target (PF only)
+• Multiplayer-Aware: Calculations run on the server and stream cached results to clients
+• Wheel Mud Sprayer: Dry/wet mud particles kick up off every driven wheel on soil contact, off-field included
+• Outside-Field Destruction: Wheels also flatten supported grass/meadow foliage on field edges, meadows, yards — without damaging foreign-field crops
+• In-Game Settings Toggles: All physics features can be enabled or disabled live in Options → General settings
+• Dust Mechanics: Tune the implement-dust effects (plow, cultivator, combine, mower, wheels, etc.) with a single global multiplier or turn them off entirely
+• Realistic Plowing: When one side of a tractor drops into a furrow, the wheels on the lower side get a narrower physical collider and stronger suspension damping to reduce arcade-style bouncing
+• Realistic Wheel Physics: Wheel slip on farmland paints cultivator texture, deforms the terrain into proportional ruts, reduces grip on wet soil, sinks the wheels slightly, and damps the suspension. Smart gates: diff/4WD reduce damage, wide/track tires reduce damage, heavy/wet vehicles lower the threshold
+• FarmKit HUD: On-screen slip% read-out near the speedometer, colour-coded green/yellow/red
+• Multi-Language Support: Available in 3 languages
+
+Press Right Shift + F to open FarmKit.
+
+Version History:
+• 1.0.0.0 (Initial Release)
+  - Standalone keybind-driven dialog (Right Shift + F), replaces the in-game menu tab
+  - Material overview with farm grouping and selected-field seed toggle
+  - Per-field requirements: lime, mineral fertilizer, liquid fertilizer, manure, slurry, fermentation residue, herbicide and seed
+  - Custom map fertilizer detection via sprayTypes
+  - Precision Farming runtime sampling with cover/ground type filtering
+  - Organic Nitrogen mode (soil target / plant target)
+  - Vanilla provider for non-PF games and modmap custom fertilizers
+  - Multiplayer request/response events with server-side fingerprinted cache
+  - Wheel Mud Physics specialization (auto-injected on Washable+Wheels vehicles)
+  - Outside-field Ground Physics via custom DensityMapModifier path
+  - Dust Mechanics: global enable + intensity multiplier across plow, cultivator, combine, mower, baler, wheels and work particles
+  - Realistic Plowing: furrow-side detection with narrower wheel collider and stronger suspension damping on the lower side
+  - Realistic Wheel Physics: slip-driven cultivator paint, terrain rut deformation, grip reduction on wet soil, wheel sink, anti-bounce suspension, viscous brake (mud bog drag), slip-burst mud spray, tire-type detection (street/forest/wide/twin/track), diff/4WD slip reduction, weight/wet threshold modulation, VariableTirePressure compat
+  - FarmKit HUD: on-screen slip% near the speedometer with green/yellow/red colour coding and drop-shadow
+  - In-game settings panel under Options → General with toggles for Mud Physics, Ground Physics, Dust Mechanics, Dust Multiplier, Realistic Plowing, Realistic Wheel Physics and FarmKit HUD, multiplayer-synced
+  - Localisation: English, German, French
+]]></en>
+
+        <de><![CDATA[Umfassendes Feldplanungssystem für Landwirtschafts-Simulator 25.
+
+Funktionen:
+• Feldübersicht: Jedes Feld mit Fläche, Düngemittel-, Kalk-, Herbizid- und Saatgutbedarf auf einen Blick
+• Materialabdeckung: Kalk, Mineraldünger, Flüssigdünger, Mist, Gülle, Gärrest, Herbizid und Saatgut pro Feld
+• Saatgut-Ansicht: Im selben Dialog umschalten, um den Saatgutbedarf in Litern pro Frucht für das ausgewählte Feld zu sehen
+• Eigene Karten-Dünger: Erkennt automatisch in der Map definierte Dünger (sprayTypes)
+• Precision Farming Unterstützung: Liest aktive PF-Karten (Boden/pH/Stickstoff/Bedeckung) für genaue Feldwerte
+• Organischer Stickstoff-Modus: Schaltet die Berechnung organischer Dünger zwischen Boden- und Pflanzen-Zielwert um (nur PF)
+• Multiplayer-fähig: Berechnungen laufen auf dem Server und werden zwischengespeichert an Clients gestreamt
+• Rad-Schlammspritze: Trockene/nasse Schlammpartikel sprühen bei Bodenkontakt von jedem Antriebsrad, auch außerhalb von Feldern
+• Zerstörung außerhalb der Felder: Räder zerstören auch Gras-/Wiesenflächen an Feldrändern, Wiesen und Höfen — ohne fremde Felder zu beschädigen
+• In-Game-Einstellungen: Alle Physik-Funktionen können in Optionen → Allgemeine Einstellungen live an- und ausgeschaltet werden
+• Staubmechanik: Steuere die Staubeffekte von Geräten (Pflug, Grubber, Mähdrescher, Mäher, Räder usw.) per globalem Multiplikator oder schalte sie komplett ab
+• Realistisches Pflügen: Sinkt eine Traktorseite in eine Furche, erhalten die unteren Räder einen schmaleren Kollider und stärkere Dämpfung gegen unrealistisches Aufschaukeln
+• Realistische Radphysik: Radschlupf auf Feldboden malt Grubber-Spuren, verformt das Terrain proportional, reduziert Grip auf nassem Boden, lässt Räder leicht einsinken und dämpft die Federung. Intelligente Gates: Diff/Allrad reduziert Schaden, Breit-/Raupenreifen reduziert Schaden, schwere/nasse Bedingungen senken den Schwellwert
+• FarmKit HUD: Schlupf-Anzeige in Prozent neben dem Tacho, farbcodiert grün/gelb/rot
+• Mehrsprachige Unterstützung: In 3 Sprachen verfügbar
+
+Drücken Sie Rechte Umschalttaste + F, um die FarmKit zu öffnen.
+
+Versionsverlauf:
+• 1.0.0.0 (Erstveröffentlichung)
+  - Eigenständiger Dialog per Tastenbelegung (Rechte Umschalttaste + F), ersetzt den Reiter im Spielmenü
+  - Materialübersicht mit Hof-Gruppierung und Saatgut-Umschaltung pro ausgewähltem Feld
+  - Bedarf pro Feld: Kalk, Mineraldünger, Flüssigdünger, Mist, Gülle, Gärrest, Herbizid und Saatgut
+  - Erkennung eigener Karten-Dünger über sprayTypes
+  - Precision Farming Laufzeit-Sampling mit Bedeckungs-/Bodentyp-Filterung
+  - Organischer Stickstoff-Modus (Boden-Zielwert / Pflanzen-Zielwert)
+  - Standardberechnung für Spiele ohne PF und für Map-eigene Dünger
+  - Multiplayer Anfrage/Antwort-Events mit Fingerprint-Server-Cache
+  - Rad-Schlammphysik-Spezialisierung (automatisch auf Washable+Wheels-Fahrzeuge angewendet)
+  - Außerhalb-Feld-Bodenphysik über benutzerdefinierten DensityMapModifier-Pfad
+  - Staubmechanik: globaler Schalter + Intensitäts-Multiplikator für Pflug, Grubber, Mähdrescher, Mäher, Pressen, Räder und Arbeitspartikel
+  - Realistisches Pflügen: Furchenseiten-Erkennung mit schmalerem Radkollider und stärkerer Dämpfung auf der unteren Seite
+  - Realistische Radphysik: schlupfgesteuerte Grubber-Spuren, Terrain-Furchenverformung, Grip-Reduktion auf nassem Boden, Radeinsinken, Anti-Bounce-Federung, viskose Bremse (Schlamm-Festfahr-Effekt), Schlamm-Spritz-Verstärkung bei Schlupf, Reifentyp-Erkennung (Straße/Forst/Breit/Zwilling/Raupe), Diff/Allrad-Schlupfreduktion, Gewichts-/Nässe-Schwellwert-Anpassung, VariableTirePressure-Kompatibilität
+  - FarmKit HUD: Schlupf-Anzeige in Prozent neben dem Tacho mit grün/gelb/rot Farbcodierung und Schlagschatten
+  - In-Game-Einstellungsbereich unter Optionen → Allgemein mit Schaltern für Schlammphysik, Bodenphysik, Staubmechanik, Staub-Multiplikator, Realistisches Pflügen, Realistische Radphysik und FarmKit HUD, multiplayer-synchronisiert
+  - Lokalisierung: Englisch, Deutsch, Französisch
+]]></de>
+
+        <fr><![CDATA[Système complet de planification des champs pour Farming Simulator 25.
+
+Fonctionnalités:
+• Aperçu des champs: Visualisez chaque champ avec sa surface et ses besoins en engrais, chaux, herbicide et semences
+• Couverture des matériaux: Chaux, engrais minéral, engrais liquide, fumier, lisier, digestat, herbicide et semences par champ
+• Vue Semences: Basculez dans la même boîte de dialogue pour voir les besoins en semences par culture pour le champ sélectionné
+• Engrais de carte personnalisée: Détecte automatiquement les engrais déclarés dans les sprayTypes de la carte
+• Support Precision Farming: Lit les cartes PF actives (sol/pH/azote/couverture) pour des estimations précises par champ
+• Mode Azote organique: Bascule le calcul des engrais organiques entre cible sol et cible plante (PF uniquement)
+• Compatible multijoueur: Les calculs sont effectués sur le serveur puis transmis en cache aux clients
+• Pulvérisateur de boue: Des particules de boue sèche/humide jaillissent de chaque roue motrice au contact du sol, y compris hors champ
+• Destruction hors-champ: Les roues écrasent également l'herbe/prairie en bordure de champ, prairies et cours — sans endommager les cultures des champs voisins
+• Réglages en jeu: Toutes les fonctionnalités physiques peuvent être activées/désactivées dans Options → Réglages généraux
+• Mécanique de la poussière: Ajustez les effets de poussière des outils (charrue, cultivateur, moissonneuse, faucheuse, roues, etc.) via un multiplicateur global ou désactivez-les entièrement
+• Labour réaliste: Quand un côté du tracteur s'enfonce dans un sillon, les roues du côté bas reçoivent un collider plus étroit et un amortissement renforcé pour réduire les rebonds arcade
+• Physique réaliste des roues: Le patinage des roues sur les champs peint la texture cultivateur, déforme le terrain en sillons proportionnels, réduit l'adhérence sur sol humide, fait s'enfoncer les roues et amortit la suspension. Gates intelligents : diff/4x4 réduit les dégâts, pneus larges/chenilles réduisent les dégâts, véhicules lourds/humides abaissent le seuil
+• HUD FarmKit: Affichage du patinage en pourcentage près du compteur, code couleur vert/jaune/rouge
+• Support multilingue: Disponible en 3 langues
+
+Appuyez sur Maj Droite + F pour ouvrir les FarmKit.
+
+Historique des versions:
+• 1.0.0.0 (Première version)
+  - Boîte de dialogue autonome pilotée par raccourci (Maj Droite + F), remplace l'onglet du menu en jeu
+  - Aperçu des matériaux avec regroupement par exploitation et bascule semences pour le champ sélectionné
+  - Besoins par champ : chaux, engrais minéral, engrais liquide, fumier, lisier, digestat, herbicide et semences
+  - Détection automatique des engrais de cartes personnalisées via sprayTypes
+  - Échantillonnage Precision Farming à l'exécution avec filtrage couverture/type de sol
+  - Mode Azote organique (cible sol / cible plante)
+  - Fournisseur standard pour les parties sans PF et pour les engrais de cartes personnalisées
+  - Événements multijoueur requête/réponse avec cache serveur par empreinte
+  - Spécialisation Physique de la boue (injectée automatiquement sur les véhicules Washable+Wheels)
+  - Physique du sol hors-champ via un chemin DensityMapModifier personnalisé
+  - Mécanique de la poussière : interrupteur global + multiplicateur d'intensité pour charrue, cultivateur, moissonneuse, faucheuse, presse, roues et particules de travail
+  - Labour réaliste : détection du côté du sillon avec collider de roue plus étroit et amortissement renforcé du côté bas
+  - Physique réaliste des roues : peinture cultivateur pilotée par le patinage, déformation du terrain en sillons, réduction d'adhérence sur sol humide, enfoncement des roues, suspension anti-rebond, frein visqueux (effet d'embourbement), gerbe de boue lors du patinage, détection du type de pneu (route/forêt/large/jumelé/chenille), réduction du patinage diff/4x4, modulation du seuil selon poids/humidité, compatibilité VariableTirePressure
+  - HUD FarmKit : pourcentage de patinage près du compteur, code couleur vert/jaune/rouge avec ombre portée
+  - Panneau de réglages en jeu sous Options → Réglages généraux avec bascules pour Physique de la boue, Physique du sol, Mécanique de la poussière, Multiplicateur de poussière, Labour réaliste, Physique réaliste des roues et HUD FarmKit, synchronisé en multijoueur
+  - Localisation : anglais, allemand, français
+]]></fr>
+    </description>
+
+    <l10n filenamePrefix="languages/NXFarmKit_l10n"/>
+    <iconFilename>icon_NXFarmKit.dds</iconFilename>
+    <multiplayer supported="true" />
+    <extraSourceFiles>
+        <sourceFile filename="scripts/NXFarmKit.lua" />
+        <sourceFile filename="scripts/NXFarmKitPFBridge.lua" />
+        <sourceFile filename="scripts/NXFieldPhysics.lua" />
+        <sourceFile filename="scripts/NXDustMechanics.lua" />
+        <sourceFile filename="scripts/NXRealisticPlowing.lua" />
+        <sourceFile filename="scripts/NXRealisticWheelPhysics.lua" />
+        <sourceFile filename="scripts/NXFarmKitHUD.lua" />
+        <sourceFile filename="scripts/NXFarmKitSettings.lua" />
+    </extraSourceFiles>
+    <actions>
+        <action name="SHOW_FARMKIT_DLG" category="SYSTEM" />
+    </actions>
+    <inputBinding>
+        <actionBinding action="SHOW_FARMKIT_DLG">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_f" />
+        </actionBinding>
+    </inputBinding>
+</modDesc>

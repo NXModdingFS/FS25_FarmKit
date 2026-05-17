@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<l10n>
+  <texts>
+    <!-- ============================================================ -->
+    <!-- FarmKit - Keybind & Dialog                          -->
+    <!-- ============================================================ -->
+    <text name="input_SHOW_FARMKIT_DLG"    text="FarmKit" />
+    <text name="ui_farmKitDlg_title"        text="FarmKit" />
+    <text name="ui_ingameMenuFarmKit"       text="FarmKit" />
+
+    <text name="ui_farmKitDlg_btnShowSeeds" text="Show seeds" />
+    <text name="ui_farmKitDlg_btnHideSeeds" text="Hide seeds" />
+    <text name="ui_seed_btn"                        text="Show seed data" />
+
+    <!-- ============================================================ -->
+    <!-- Column headers                                                -->
+    <!-- ============================================================ -->
+    <text name="ui_seed_header_fruit"               text="Crop" />
+    <text name="ui_seed_header_consume"             text="Requirement" />
+
+    <text name="nx_header_field"                  text="Field Num" />
+    <text name="nx_section_yourFarm"              text="Your Farm" />
+    <text name="nx_header_fertilizer"             text="Solid Fert." />
+    <text name="nx_header_liquidFertilizer"       text="Liquid Fert." />
+    <text name="nx_header_slurry"                 text="Slurry" />
+
+    <!-- ============================================================ -->
+    <!-- Organic Nitrogen mode toggle (Precision Farming only)         -->
+    <!-- ============================================================ -->
+    <text name="ui_organicNitrogenMode_label"       text="Organic N mode" />
+    <text name="ui_organicNitrogenMode_soil"        text="Soil target" />
+    <text name="ui_organicNitrogenMode_plant"       text="Plant target" />
+
+    <!-- ============================================================ -->
+    <!-- Seed view dialog title                                        -->
+    <!-- ============================================================ -->
+    <text name="ui_seedFrame_header"                text="Seed requirement for field %s (%s %s)" />
+
+    <!-- ============================================================ -->
+    <!-- Settings menu - FarmKit section                          -->
+    <!-- ============================================================ -->
+    <text name="nx_setting_on"                    text="On" />
+    <text name="nx_setting_off"                   text="Off" />
+
+    <text name="nx_menu_section_title"            text="NX FarmKit" />
+
+    <text name="nx_menu_mudSprayerEnabled"         text="MudPhysics" />
+    <text name="nx_menu_mudSprayerEnabled_tooltip" text="Spray dry/wet mud particles from each driven wheel when in soil contact. Skips planters, seeders, plows and other tool categories." />
+
+    <text name="nx_menu_densityEnabled"            text="Ground Physics" />
+    <text name="nx_menu_densityEnabled_tooltip"    text="Allow wheels to flatten grass and meadow foliage outside the field-area mask. Does not damage foreign-field crops." />
+
+    <!-- ============================================================ -->
+    <!-- Settings menu - Dust Mechanics section                         -->
+    <!-- ============================================================ -->
+    <text name="nx_menu_dustMechanics_section"    text="Dust Mechanics" />
+
+    <text name="nx_menu_dustEnabled"              text="Dust Mechanics" />
+    <text name="nx_menu_dustEnabled_tooltip"      text="Master switch for the dust scaling system. When off, vanilla particle behaviour is restored on every implement." />
+
+    <text name="nx_menu_dustMultiplier"           text="Dust Multiplier" />
+    <text name="nx_menu_dustMultiplier_tooltip"   text="Global intensity for all implement dust effects (plow, cultivator, combine, mower, wheels, etc.). 100% is the engine default, 200% is the mod default." />
+
+    <text name="nx_menu_plowingEnabled"           text="Realistic Plowing" />
+    <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilises wheel physics when one side of a tractor drops into a furrow — narrower wheel collider and stronger suspension damping on the lower side to reduce arcade-style bouncing." />
+
+    <text name="nx_menu_wheelPhysicsEnabled"         text="Realistic Wheel Physics" />
+    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Slip-driven wheel physics on farmland: cultivator paint, terrain ruts, grip reduction, wheel sink and anti-bounce suspension. Diff/4WD and wide/track tires reduce damage; heavy/wet conditions lower the threshold." />
+
+    <text name="nx_menu_hudEnabled"                  text="FarmKit HUD" />
+    <text name="nx_menu_hudEnabled_tooltip"          text="On-screen FarmKit HUD overlay — currently displays the current wheel slip percentage near the speedometer (green / yellow / red)." />
+  </texts>
+</l10n>

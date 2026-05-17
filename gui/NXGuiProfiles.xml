@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUIProfiles>
+    <Presets>
+        <Preset name="colorWhite" value="1 1 1 1"/>
+        <Preset name="colorListHeaderBackground" value="0 0 0 0.35" />
+        <Preset name="colorGold" value="1 0.85 0.1 1" />
+    </Presets>
+
+    <Profile name="FieldCalcHeaderLeft" extends="baseReference">
+        <imageColor value="0 0 0 0" />
+        <textFocusedColor value="$preset_fs25_colorMainHighlight" />
+        <textHighlightedColor value="$preset_fs25_colorMainHighlight" />
+        <textSize value="14px" />
+        <textBold value="true" />
+        <textUpperCase value="true" />
+        <textColor value="$preset_colorWhite_50" />
+        <textAlignment value="center" />
+        <textDisabledColor value="$preset_colorDisabled" />
+    </Profile>
+
+    <Profile name="FieldCalcHeaderCenter" extends="FieldCalcHeaderLeft">
+        <textAlignment value="center" />
+    </Profile>
+
+    <Profile name="FieldCalcList" extends="emptyPanel" with="anchorStretchingYLeft pivotTopLeft">
+    </Profile>
+
+    <Profile name="FieldCalcListItem" extends="baseReference" with="anchorTopStretchingX alternating">
+        <height value="40px"/>
+        <imageColor value="$preset_fs25_colorGrey" />
+        <imageSelectedColor value="$preset_fs25_colorMainHighlight" />
+        <alternateBackgroundColor value="$preset_fs25_colorGreyDark_50" />
+    </Profile>
+
+    <Profile name="FieldCalcRowCell" extends="baseReference" with="anchorStretchingYLeft">
+        <textBold value="false" />
+        <textSize value="14px" />
+        <textAlignment value="center" />
+        <textColor value="$preset_fs25_colorMainLight" />
+        <textSelectedColor value="$preset_fs25_colorMainDark" />
+        <textDisabledColor value="$preset_colorDisabled" />
+    </Profile>
+
+    <Profile name="FieldCalcSectionHeader" extends="baseReference" with="anchorTopStretchingX">
+        <height value="34px"/>
+        <imageColor value="$preset_colorListHeaderBackground" />
+    </Profile>
+
+    <Profile name="FieldCalcSectionHeaderTitle" extends="baseReference" with="anchorStretchingYLeft">
+        <textBold value="true" />
+        <textUpperCase value="true" />
+        <textSize value="15px" />
+        <textColor value="$preset_colorGold" />
+        <textAlignment value="left" />
+    </Profile>
+
+</GUIProfiles>

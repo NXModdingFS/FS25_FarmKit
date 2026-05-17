@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<l10n>
+  <texts>
+    <!-- ============================================================ -->
+    <!-- FarmKit - Raccourci & Boîte de dialogue         -->
+    <!-- ============================================================ -->
+    <text name="input_SHOW_FARMKIT_DLG"    text="FarmKit" />
+    <text name="ui_farmKitDlg_title"        text="FarmKit" />
+    <text name="ui_ingameMenuFarmKit"       text="FarmKit" />
+
+    <text name="ui_farmKitDlg_btnShowSeeds" text="Afficher semences" />
+    <text name="ui_farmKitDlg_btnHideSeeds" text="Masquer semences" />
+    <text name="ui_seed_btn"                        text="Afficher semences" />
+
+    <!-- ============================================================ -->
+    <!-- En-têtes de colonnes                                          -->
+    <!-- ============================================================ -->
+    <text name="ui_seed_header_fruit"               text="Culture" />
+    <text name="ui_seed_header_consume"             text="Besoin" />
+
+    <text name="nx_header_field"                  text="Champ N°" />
+    <text name="nx_section_yourFarm"              text="Votre Ferme" />
+
+    <!-- ============================================================ -->
+    <!-- Mode Azote organique (Precision Farming uniquement)           -->
+    <!-- ============================================================ -->
+    <text name="ui_organicNitrogenMode_label"       text="Mode N organique" />
+    <text name="ui_organicNitrogenMode_soil"        text="Valeur sol" />
+    <text name="ui_organicNitrogenMode_plant"       text="Valeur plante" />
+
+    <!-- ============================================================ -->
+    <!-- Titre de la vue Semences                                      -->
+    <!-- ============================================================ -->
+    <text name="ui_seedFrame_header"                text="Besoin en semences pour le champ %s (%s %s)" />
+
+    <!-- ============================================================ -->
+    <!-- Menu des réglages - Section FarmKit                 -->
+    <!-- ============================================================ -->
+    <text name="nx_setting_on"                    text="Activé" />
+    <text name="nx_setting_off"                   text="Désactivé" />
+
+    <text name="nx_menu_section_title"            text="NX FarmKit" />
+
+    <text name="nx_menu_mudSprayerEnabled"         text="Physique de la boue" />
+    <text name="nx_menu_mudSprayerEnabled_tooltip" text="Pulvérise des particules de boue sèche/humide depuis chaque roue motrice au contact du sol. Exclut planteuses, semoirs, charrues et autres catégories d'outils." />
+
+    <text name="nx_menu_densityEnabled"            text="Physique du sol" />
+    <text name="nx_menu_densityEnabled_tooltip"    text="Permet aux roues d'écraser l'herbe et la prairie en dehors du masque de champ. N'endommage pas les cultures des champs voisins." />
+
+    <!-- ============================================================ -->
+    <!-- Menu des réglages - Section Mécanique de la poussière           -->
+    <!-- ============================================================ -->
+    <text name="nx_menu_dustMechanics_section"    text="Mécanique de la poussière" />
+
+    <text name="nx_menu_dustEnabled"              text="Mécanique de la poussière" />
+    <text name="nx_menu_dustEnabled_tooltip"      text="Interrupteur principal du système de mise à l'échelle de la poussière. Lorsqu'il est désactivé, le comportement vanilla des particules est restauré sur tous les outils." />
+
+    <text name="nx_menu_dustMultiplier"           text="Multiplicateur de poussière" />
+    <text name="nx_menu_dustMultiplier_tooltip"   text="Intensité globale pour tous les effets de poussière des outils (charrue, cultivateur, moissonneuse, faucheuse, roues, etc.). 100% correspond au comportement du jeu, 200% est la valeur par défaut du mod." />
+
+    <text name="nx_menu_plowingEnabled"           text="Labour réaliste" />
+    <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilise la physique des roues lorsqu'un côté du tracteur s'enfonce dans un sillon — collision de roue plus étroite et amortissement renforcé du côté bas pour réduire les rebonds arcade." />
+
+    <text name="nx_menu_wheelPhysicsEnabled"         text="Physique réaliste des roues" />
+    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Physique des roues pilotée par le patinage sur les champs : peinture cultivateur, déformation du terrain, perte d'adhérence, enfoncement et amortissement anti-rebond. Diff/4x4 et pneus larges/chenilles réduisent les dégâts ; conditions humides/lourdes abaissent le seuil." />
+
+    <text name="nx_menu_hudEnabled"                  text="HUD FarmKit" />
+    <text name="nx_menu_hudEnabled_tooltip"          text="HUD FarmKit à l'écran — affiche actuellement le pourcentage de patinage des roues près du compteur (vert / jaune / rouge)." />
+  </texts>
+</l10n>

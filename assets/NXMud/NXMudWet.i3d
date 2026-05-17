@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="NXMudWet.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="1" filename="NXMudDiffuse.dds"/>
+    <File fileId="2" filename="NXMudNormal.dds"/>
+    <File fileId="4" filename="$data/shaders/psColorShader.xml"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="fx_mat" materialId="5" specularColor="0.419608 1 0" customShaderId="4" customShaderVariation="velocityAligned">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+    </Material>
+    <Material name="lambert1" materialId="6" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="NXMudWet.i3d.shapes">
+  </Shapes>
+
+
+  <Dynamics>
+    <ParticleSystem name="soilEmitter" dynamicId="1" type="sprite" rate="0.15" lifespan="1200" maxCount="600" speed="0.004" speedRandom="0.002" tangentSpeed="0.25" normalSpeed="1" emitterShapeVelocityScale="0.97" damping="0.97" spriteScaleX="0.2" spriteScaleY="0.2" spriteScaleXGain="0.0015" spriteScaleYGain="0.0015" blendFactor="1" blendInFactor="0" blendOutFactor="1" randomInitRotation="true" textureAtlasSizeX="16" textureAtlasSizeY="4">
+      <Gravity force="0 -1.2 0"/>
+    </ParticleSystem>
+  </Dynamics>
+
+  <Scene>
+    <Dynamic name="soilChunksEmitter" dynamicId="1" emitterShapeNodeId="13" clipDistance="100" nodeId="12" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="5">
+      <Shape name="emitShape" shapeId="2" nodeId="13" castsShadows="false" receiveShadows="false" nonRenderable="true" materialIds="6"/>
+    </Dynamic>
+  </Scene>
+
+  <UserAttributes>
+    <UserAttribute nodeId="12">
+      <Attribute name="useWorldSpace" type="boolean" value="false"/>
+      <Attribute name="worldSpace" type="boolean" value="false"/>
+    </UserAttribute>
+  </UserAttributes>
+
+</i3D>
