@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="towingChainHook">
+    <annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+    <storeData>
+        <name>Towing Chain 3.5m</name>
+        <functions>
+            <function>$l10n_functionTowingChain</function>
+        </functions>
+        <image>store_towingChain3.png</image>
+        <price>700</price>
+        <lifetime>1200</lifetime>
+        <rotation>0</rotation>
+        <brand>LIZARD</brand>
+        <category>misc</category>
+        <shopTranslationOffset>0 0 0.6</shopTranslationOffset>
+    </storeData>
+	<base>
+        <typeDesc>$l10n_typeDesc_towingChainHook</typeDesc>
+        <filename>towingChain3m.i3d</filename>
+		<size width="0.3" length="3.85" lengthOffset="-1.1" height="0.7"/>
+		<supportsPickUp>true</supportsPickUp>
+		<components>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<component centerOfMass="0 0.5 0" solverIterationCount="10" mass="3"/>
+			<joint component1="1" component2="2" node="joint1" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="2" component2="3" node="joint2" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="3" component2="4" node="joint3" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="4" component2="5" node="joint4" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="5" component2="6" node="joint5" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="6" component2="7" node="joint6" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="7" component2="8" node="joint7" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="8" component2="9" node="joint8" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="9" component2="10" node="joint9" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="10" component2="11" node="joint10" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="11" component2="12" node="joint11" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="12" component2="13" node="joint12" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="13" component2="14" node="joint13" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="14" component2="15" node="joint14" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="15" component2="16" node="joint15" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="16" component2="17" node="joint16" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="17" component2="18" node="joint17" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="18" component2="19" node="joint18" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="19" component2="20" node="joint19" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="20" component2="21" node="joint20" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="21" component2="22" node="joint21" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="22" component2="23" node="joint22" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="23" component2="24" node="joint23" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="24" component2="25" node="joint24" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="25" component2="26" node="joint25" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="26" component2="27" node="joint26" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="27" component2="28" node="joint27" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<joint component1="28" component2="29" node="joint28" rotLimit="20 20 20" transLimit="0 0 0" transLimitSpring="1000000 1000000 1000000" transLimitDamping="0.01 0.01 0.01"/>
+			<collisionPair component1="1" component2="29" enabled="false"/>
+			<collisionPair component1="1" component2="28" enabled="false"/>
+			<collisionPair component1="2" component2="29" enabled="false"/>
+			<collisionPair component1="2" component2="28" enabled="false"/>
+		</components>
+		<schemaOverlay attacherJointPosition="0 0" name="DEFAULT_IMPLEMENT"/>
+    </base>
+	<attachSound file="$data/sounds/vehicles/shared/attach_01.ogg" pitchOffset="1.0" volume="1.0" indoorVolumeFactor="0.35" indoorLowpassGain="0.75" />
+	<towingChainHook index="28>2" rootNode="28>" firstComponent="0>" distance="3.6" brakeForce="1.2" brakeForceIdle="0.1" massAttached="0.04" massDetached="0.003">
+		<attacherJoints comboDuration="2">
+			<attacherJoint node="0>" jointType="towingHook" lowerRotLimit="10 65 65" upperRotationOffset="0" allowsJointLimitMovement="false" >
+				<distanceToGround lower="0.34" upper="0.98" />
+				<schema position="1 0" rotation="0" invertX="false" />
+			</attacherJoint>
+		</attacherJoints>
+	</towingChainHook>
+	<attachable>
+        <inputAttacherJoints>
+            <inputAttacherJoint node="attacherJoint" jointType="trailer"/>
+        </inputAttacherJoints>
+    </attachable>
+	<ai>
+        <agentAttachment width="0.3" length="3.85" lengthOffset="-1.7" height="0.7"/>
+    </ai>
+	<foliageBending>
+        <bendingNode minX="-0.1" maxX="0.1" minZ="-0.2" maxZ="0.2" yOffset="0.5" node="28>"/>
+    </foliageBending>
+	<wearable wearDuration="600" workMultiplier="5" fieldMultiplier="2"/>
+    <washable dirtDuration="90" washDuration="1" workMultiplier="4" fieldMultiplier="2"/>
+	<i3dMappings>
+        <i3dMapping id="attacherJoint" node="0>2"/>
+        <i3dMapping id="joint1" node="0>0|0"/>
+        <i3dMapping id="joint2" node="1>0|0"/>
+        <i3dMapping id="joint3" node="2>0|0"/>
+        <i3dMapping id="joint4" node="3>0|0"/>
+        <i3dMapping id="joint5" node="4>0|0"/>
+        <i3dMapping id="joint6" node="5>0|0"/>
+        <i3dMapping id="joint7" node="6>0|0"/>
+        <i3dMapping id="joint8" node="7>0|0"/>
+        <i3dMapping id="joint9" node="8>0|0"/>
+        <i3dMapping id="joint10" node="9>0|0"/>
+        <i3dMapping id="joint11" node="10>0|0"/>
+        <i3dMapping id="joint12" node="11>0|0"/>
+        <i3dMapping id="joint13" node="12>0|0"/>
+        <i3dMapping id="joint14" node="13>0|0"/>
+        <i3dMapping id="joint15" node="14>0|0"/>
+        <i3dMapping id="joint16" node="15>0|0"/>
+        <i3dMapping id="joint17" node="16>0|0"/>
+        <i3dMapping id="joint18" node="17>0|0"/>
+        <i3dMapping id="joint19" node="18>0|0"/>
+        <i3dMapping id="joint20" node="19>0|0"/>
+        <i3dMapping id="joint21" node="20>0|0"/>
+        <i3dMapping id="joint22" node="21>0|0"/>
+        <i3dMapping id="joint23" node="22>0|0"/>
+        <i3dMapping id="joint24" node="23>0|0"/>
+        <i3dMapping id="joint25" node="24>0|0"/>
+        <i3dMapping id="joint26" node="25>0|0"/>
+        <i3dMapping id="joint27" node="26>0|0"/>
+        <i3dMapping id="joint28" node="27>0|0"/>
+	</i3dMappings>
+</vehicle>

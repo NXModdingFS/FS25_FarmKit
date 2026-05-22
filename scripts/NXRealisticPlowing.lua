@@ -299,7 +299,6 @@ if not rawget(_G, "_NXRealisticPlowing_bootstrapped") then
                 end
             end
         end
-        print(string.format("[%s] Injected %s into %d vehicle types", MOD_NAME, FULL_SPEC, count))
     end
 
     TypeManager.validateTypes = Utils.appendedFunction(TypeManager.validateTypes, nxInjectSpec)

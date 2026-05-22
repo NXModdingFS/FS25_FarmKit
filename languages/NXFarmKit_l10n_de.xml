@@ -43,11 +43,8 @@
 
     <text name="nx_menu_section_title"            text="NX FarmKit" />
 
-    <text name="nx_menu_mudSprayerEnabled"         text="Schlammphysik" />
-    <text name="nx_menu_mudSprayerEnabled_tooltip" text="Trockene/nasse Schlammpartikel sprühen bei Bodenkontakt von jedem Antriebsrad. Pflanzgeräte, Sämaschinen, Pflüge und andere Werkzeugkategorien werden ausgenommen." />
-
     <text name="nx_menu_densityEnabled"            text="Bodenphysik" />
-    <text name="nx_menu_densityEnabled_tooltip"    text="Räder zerstören Gras- und Wiesenflächen außerhalb der Feldmaske. Fremde Feldfrüchte bleiben unberührt." />
+    <text name="nx_menu_densityEnabled_tooltip"    text="Wirkung der Räder auf den Boden: trockene/nasse Schlammpartikel sprühen bei Bodenkontakt von jedem Antriebsrad, Furchen bei Schlupf, Einsinken in weichem Boden und Grubber-Spuren auf eigenem Ackerland. Pflanzgeräte, Sämaschinen, Pflüge und andere Werkzeugkategorien werden ausgenommen. Beschädigt keine angebauten Feldfrüchte oder Pflanzen drumherum." />
 
     <!-- ============================================================ -->
     <!-- Einstellungsmenü - Staubmechanik-Bereich                       -->
@@ -64,9 +61,84 @@
     <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilisiert die Radphysik, wenn eine Traktorseite in eine Furche absinkt — schmalere Radkollision und stärkere Dämpfung auf der unteren Seite gegen unrealistisches Aufschaukeln." />
 
     <text name="nx_menu_wheelPhysicsEnabled"         text="Realistische Radphysik" />
-    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Schlupf-gesteuerte Radphysik auf Feldboden: Grubber-Spuren, Bodenverformung, Grip-Reduktion, Einsinken und gedämpfte Federung. Diff/Allrad und Breit-/Raupenreifen reduzieren den Schaden; schwere/nasse Bedingungen senken den Schwellwert." />
+    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Wirkung von Schlamm und Schlupf auf das Rad: reduzierter Grip auf nassem Boden, viskose Bremse im Schlamm, Anti-Bounce-Federung in Furchen und Schlamm-Spritz-Verstärkung bei Schlupf. Diff/Allrad und Breit-/Raupenreifen reduzieren den Schaden; schwere/nasse Bedingungen senken den Schwellwert." />
+
+    <text name="nx_menu_realisticEngineEnabled"         text="Realistischer Motormodus" />
+    <text name="nx_menu_realisticEngineEnabled_tooltip" text="Koppelt den Motorzustand an die Physik. Wenn die Räder auf dem Feld einsinken und durchdrehen, steigt die Soll-Drehzahl des Motors proportional zum Festfahrgrad — der Antriebsstrang dreht im Leerlauf ohne Traktion, der klassische Festfahr-Sound. Wirkt nur, solange der Spieler Gas gibt. Kompatibel mit RPM-Mods — bei jedem Tick gewinnt der letzte Schreibvorgang." />
 
     <text name="nx_menu_hudEnabled"                  text="FarmKit HUD" />
     <text name="nx_menu_hudEnabled_tooltip"          text="On-Screen FarmKit HUD — zeigt aktuell den Radschlupf in Prozent neben dem Tacho an (grün / gelb / rot)." />
+
+    <!-- ============================================================ -->
+    <!-- Towing Chain With Hook (by kenny456 & Bullgore, included with permission) -->
+    <!-- ============================================================ -->
+    <text name="input_FARMKIT_ATTACH_VEHICLE"           text="TowingChain - Kette am Fahrzeug anbringen / lösen" />
+    <text name="input_FARMKIT_VEHICLE_THROTTLE"         text="TowingChain - Drosselklappe des gezogenen Fahrzeugs umschalten" />
+    <text name="input_FARMKIT_MANUAL_ATTACH"            text="TowingChain - Kette von Hand am Fahrzeug anbringen / lösen" />
+    <text name="input_FARMKIT_ATTACH_HOOK"              text="TowingChain - Befestigungshaken montieren" />
+    <text name="input_FARMKIT_SWITCH"                   text="TowingChain - Zur nächsten Kette wechseln" />
+    <text name="input_FARMKIT_STEER_LEFT"               text="TowingChain - Links lenken" />
+    <text name="input_FARMKIT_STEER_RIGHT"              text="TowingChain - Rechts lenken" />
+    <text name="input_FARMKIT_TOGGLE_STEERING_MODE"     text="TowingChain - Schalten Sie den Lenkmodus des gezogenen Fahrzeugs um" />
+    <text name="input_FARMKIT_CHANGE_ATTACHED_DIRECTION" text="TowingChain - Fahrtrichtung des gezogenen Fahrzeugs umschalten" />
+    <text name="input_FARMKIT_MOVE_HOOK_TRIGGER"        text="TowingChain - Haken bewegen" />
+    <text name="input_FARMKIT_MOVE_HOOK_LEFT"           text="Bewegen Sie den Haken nach links" />
+    <text name="input_FARMKIT_MOVE_HOOK_RIGHT"          text="Haken nach rechts bewegen" />
+    <text name="input_FARMKIT_MOVE_HOOK_FORWARD"        text="Haken nach vorne bewegen" />
+    <text name="input_FARMKIT_MOVE_HOOK_BACKWARD"       text="Haken nach hinten bewegen" />
+    <text name="input_FARMKIT_MOVE_HOOK_UP"             text="Bewegen Sie den Haken" />
+    <text name="input_FARMKIT_MOVE_HOOK_DOWN"           text="Haken nach unten bewegen" />
+    <text name="input_FARMKIT_OPEN_MENU"                text="TowingChain - Einstellungen" />
+    <text name="input_FARMKIT_OPEN_MENU_VEHICLE"        text="TowingChain - Einstellungen" />
+    <text name="towingChainVehicleAttach"                   text="Befestigen Sie die Abschleppkette am Fahrzeug" />
+    <text name="towingChainVehicleDetach"                   text="Abschleppkette vom Fahrzeug abnehmen" />
+    <text name="towingChainVehicleThrottleOn"               text="Schalten Sie das Gaspedal ein" />
+    <text name="towingChainVehicleThrottleOff"              text="Schalten Sie die Drosselklappe aus" />
+    <text name="towingChainSelfAttach"                      text="Befestigen Sie die Abschleppkette an sich selbst" />
+    <text name="towingChainSelfDetach"                      text="Löse die Abschleppkette von dir" />
+    <text name="towingChainMountHook"                       text="Abschlepphaken an montieren" />
+    <text name="towingChainUnmountHook"                     text="Abschlepphaken abnehmen" />
+    <text name="towingChainSteeringModeOff"                 text="Abschleppmodus für abgeschleppte Fahrzeuge: AUS" />
+    <text name="towingChainSteeringModeAuto"                text="Abschleppmodus für abgeschleppte Fahrzeuge: AUTO" />
+    <text name="towingChainSteeringModeManual"              text="Abschleppmodus für abgeschleppte Fahrzeuge: HANDBUCH" />
+    <text name="towingChainAttachedDirectionForward"        text="Fahrtrichtung des abgeschleppten Fahrzeugs: VORWÄRTS" />
+    <text name="towingChainAttachedDirectionBackward"       text="Fahrtrichtung des abgeschleppten Fahrzeugs: ZURÜCK" />
+    <text name="functionTowingChain"                        text="Mit dieser Abschleppkette können Sie Fahrzeuge ziehen. Sie können Haken an Fahrzeugen montieren, die keinen Aufsatz haben. Sie können mehrere Ketten miteinander verbinden." />
+    <text name="typeDesc_towingChainHook"                   text="Abschleppkette" />
+    <text name="towingChainChain"                           text="Kette " />
+    <text name="towingChainAttached"                        text="angehängt" />
+    <text name="towingChainNotAttached"                     text="nicht angehängt" />
+    <text name="towingChainMounted"                         text="Haken montiert" />
+    <text name="towingChainNotMounted"                      text="Haken nicht montiert" />
+    <text name="towingChainSelected"                        text=", Ausgewählt" />
+    <text name="towingChainThisVehicle"                     text="Dieses Fahrzeug" />
+    <text name="towingChainAlreadyAttached"                 text="hat bereits eine Abschleppkette angebracht." />
+    <text name="towingChainAllChains"                       text="Alle Ketten müssen in die gleiche Richtung befestigt werden." />
+    <text name="towingChainThrottleOff"                     text="Schalten Sie zuerst den Gashebel des angebrachten Fahrzeugs aus, um die Abschleppkette zu lösen!" />
+    <text name="towingChainSteeringOff"                     text="Stellen Sie zuerst den Lenkmodus des angebrachten Fahrzeugs auf AUS, um die Abschleppkette zu lösen!" />
+    <text name="towingChainAlreadyHook"                     text="Dieses Fahrzeug hat bereits einen Abschlepphaken von der Abschleppkette montiert" />
+    <text name="towingChainFirstDetach1"                    text="Zuerst die Abschleppkette" />
+    <text name="towingChainFirstDetach2"                    text="abnehmen, um den Abschlepphaken zu lösen!" />
+    <text name="towingChainFirstUnmount"                    text="Zuerst den Abschlepphaken von abnehmen" />
+    <text name="towingChainNoDrivable"                      text="An der Kette ist kein fahrbares Fahrzeug angebracht." />
+    <text name="gui_nx_Setting"                             text="FarmKit Tow Chain Einstellungen" />
+    <text name="gui_nx_manualAttachToolTip"                 text="Ob der Spieler die Schleppkette von Hand anbringen kann oder nicht." />
+    <text name="gui_nx_manualAttach"                        text="Von Hand anbringen" />
+    <text name="gui_nx_showHelpToolTip"                     text="Ob Mod-Funktionen im F1-Hilfemenü sichtbar sind oder nicht." />
+    <text name="gui_nx_showHelp"                            text="Zeig Hilfe" />
+    <text name="gui_nx_showIdsToolTip"                      text="Ob die Ketten-ID auf der Kette angezeigt wird oder nicht." />
+    <text name="gui_nx_showIds"                             text="Ketten-ID anzeigen" />
+    <text name="gui_nx_IdsDistanceViewToolTip"              text="Legen Sie den maximalen Abstand für die Anzeige der Ketten-ID fest." />
+    <text name="gui_nx_IdsDistanceView"                     text="Ketten-ID-Abstandsansicht" />
+    <text name="gui_nx_chainDistanceViewToolTip"            text="Stellen Sie die maximale Entfernung ein, in der die Kette betrieben / in der Liste angezeigt werden kann." />
+    <text name="gui_nx_chainDistanceView"                   text="Kettenbetriebsabstand" />
+    <text name="gui_nx_steeringModeToolTip"                 text="Verfügbare Lenkmodi beim Umschalten." />
+    <text name="gui_nx_steeringMode"                        text="Lenkungsmodi" />
+    <text name="gui_nx_autoOffVehicleToolTip"               text="Schalten Sie den Motor / die Lenkung des gezogenen Fahrzeugs vor dem Abhängen automatisch aus." />
+    <text name="gui_nx_autoOffVehicle"                      text="Fahrzeug automatisch ausschalten" />
+    <text name="gui_nx_button_reset"                        text="Zurücksetzen" />
+    <text name="gui_nx_both"                                text="Beide" />
+    <text name="gui_nx_auto"                                text="Nur Auto" />
+    <text name="gui_nx_manual"                              text="Nur manuell" />
   </texts>
 </l10n>

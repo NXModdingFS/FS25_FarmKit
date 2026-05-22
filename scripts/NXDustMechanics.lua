@@ -2,6 +2,7 @@ NXDustMechanics = NXDustMechanics or {}
 
 NXDustMechanics.MIN_SPEED_KMH      = 0.2
 NXDustMechanics.AREA_TOLERANCE_MS  = 1400
+NXDustMechanics.FADE_TAIL_MS       = 4000
 NXDustMechanics.LOG_PREFIX         = "[FS25_FarmKit] DustMechanics: "
 
 NXDustMechanics.TYPE_MULT = {
@@ -11,14 +12,26 @@ NXDustMechanics.TYPE_MULT = {
     WHEELS = 2.5
 }
 
+NXDustMechanics.FADE_TAIL_MS_BY_TOOL = {
+    COMBINE    = 8000,
+    PLOW       = 7000,
+    CULTIVATOR = 7000,
+    MULCHER    = 5000,
+    CLEANING   = 5000,
+    BALER      = 4000,
+    ROLLER     = 4000,
+    SOWING     = 3000,
+    MOWER      = 2500,
+    WEEDER     = 2500,
+    CUTTER     = 2000,
+    WINDROW    = 1500,
+    WHEELS     = 1500
+}
+
 NXDustMechanics.dustEnabled    = true
 NXDustMechanics.dustMultiplier = 2.0
 
 NXDustMechanics.hooksAttached  = false
-
-local function nxLog(msg)
-    print(NXDustMechanics.LOG_PREFIX .. tostring(msg))
-end
 
 local function nxSafe(fn)
     local ok, result = pcall(fn)
@@ -127,6 +140,15 @@ function NXDustMechanics.canVehicleWorkGround(vehicle, requireLowered)
     return doGround or NXDustMechanics.hasAnyRecentActivity(vehicle)
 end
 
+local function nxGetFadeTailMs(toolName)
+    local byTool = NXDustMechanics.FADE_TAIL_MS_BY_TOOL
+    if type(byTool) == "table" and toolName ~= nil then
+        local v = byTool[toolName]
+        if type(v) == "number" then return v end
+    end
+    return NXDustMechanics.FADE_TAIL_MS or 0
+end
+
 local function nxCaptureOriginals(ps)
     if ps.nxOrigEmit == nil then
         ps.nxOrigEmit = ps.emitCountScale or 1.0
@@ -144,13 +166,30 @@ function NXDustMechanics.applyToParticleSystem(ps, toolName, isWheelSystem, shou
     if ps == nil then return end
     nxCaptureOriginals(ps)
 
+    local now = g_time or 0
+    local fadeMs = nxGetFadeTailMs(toolName)
     local emit, life
-    if (not shouldEmit) or (not NXDustMechanics.dustEnabled) then
-        emit, life = ps.nxOrigEmit, ps.nxOrigLife
-    else
+    local forceEmittingOn = false
+
+    if NXDustMechanics.dustEnabled and shouldEmit then
         local m = NXDustMechanics.getEffectiveMultiplier(toolName, isWheelSystem)
         emit = nxClamp(ps.nxOrigEmit * m, 0.05, 30.0)
         life = math.max(80, math.floor(ps.nxOrigLife * nxClamp(0.9 + m * 0.35, 0.25, 4.0)))
+        ps.nxBoostedEmit = emit
+        ps.nxBoostedLife = life
+        ps.nxFadeUntil   = now + fadeMs
+    elseif NXDustMechanics.dustEnabled and fadeMs > 0
+        and ps.nxFadeUntil ~= nil and now < ps.nxFadeUntil
+        and ps.nxBoostedEmit ~= nil then
+        local t = (ps.nxFadeUntil - now) / fadeMs
+        if t < 0 then t = 0 elseif t > 1 then t = 1 end
+        emit = nxClamp(ps.nxOrigEmit + (ps.nxBoostedEmit - ps.nxOrigEmit) * t, 0.05, 30.0)
+        life = math.max(80, math.floor(ps.nxBoostedLife or ps.nxOrigLife))
+        forceEmittingOn = true
+    else
+        emit = ps.nxOrigEmit
+        life = ps.nxOrigLife
+        ps.nxFadeUntil = nil
     end
 
     if ParticleUtil ~= nil and ParticleUtil.setEmitCountScale ~= nil and ps.nxLastEmit ~= emit then
@@ -160,6 +199,9 @@ function NXDustMechanics.applyToParticleSystem(ps, toolName, isWheelSystem, shou
     if ParticleUtil ~= nil and ParticleUtil.setParticleLifespan ~= nil and ps.nxLastLife ~= life then
         ps.nxLastLife = life
         ParticleUtil.setParticleLifespan(ps, life)
+    end
+    if forceEmittingOn and ParticleUtil ~= nil and ParticleUtil.setEmittingState ~= nil then
+        ParticleUtil.setEmittingState(ps, true)
     end
 end
 
@@ -341,7 +383,6 @@ function NXDustMechanics.attachHooks()
         table.insert(groups[key].list, h)
     end
 
-    local attached = {}
     for _, group in pairs(groups) do
         local cls = _G[group.class]
         if cls ~= nil and cls[group.method] ~= nil then
@@ -362,12 +403,10 @@ function NXDustMechanics.attachHooks()
                     dispatch(self, ...)
                 end)
             end
-            attached[#attached + 1] = group.class .. "." .. group.method
         end
     end
 
     NXDustMechanics.hooksAttached = true
-    nxLog("Hooks attached: " .. table.concat(attached, ", "))
 end
 
 function NXDustMechanics:loadMap()

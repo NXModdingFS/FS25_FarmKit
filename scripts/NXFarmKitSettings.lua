@@ -2,22 +2,22 @@ NXFarmKitSettings = NXFarmKitSettings or {}
 NXFarmKitSettings.SETTINGS_FILE = "modSettings/FS25_FarmKit_Settings.xml"
 
 NXFarmKitSettings.values = {
-    mudSprayerEnabled   = true,
-    densityEnabled      = true,
-    dustEnabled         = true,
-    dustMultiplier      = 2.0,
-    plowingEnabled      = true,
-    wheelPhysicsEnabled = true,
-    hudEnabled          = true
+    densityEnabled         = true,
+    dustEnabled            = true,
+    dustMultiplier         = 2.0,
+    plowingEnabled         = true,
+    wheelPhysicsEnabled    = true,
+    realisticEngineEnabled = true,
+    hudEnabled             = true
 }
 
 NXFarmKitSettings.SETTINGS_ORDER = {
-    "mudSprayerEnabled",
     "densityEnabled",
     "dustEnabled",
     "dustMultiplier",
     "plowingEnabled",
     "wheelPhysicsEnabled",
+    "realisticEngineEnabled",
     "hudEnabled"
 }
 
@@ -59,13 +59,13 @@ local function nxEnsureSettings()
     local multValues, multStrings = nxBuildMultiplierList()
 
     NXFarmKitSettings.SETTINGS = {
-        mudSprayerEnabled   = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
-        densityEnabled      = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
-        dustEnabled         = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
-        dustMultiplier      = { default = nxClosestIndex(multValues, 2.0), values = multValues, strings = multStrings },
-        plowingEnabled      = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
-        wheelPhysicsEnabled = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
-        hudEnabled          = { default = 1, values = { true, false }, strings = nxOnOffStrings() }
+        densityEnabled         = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        dustEnabled            = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        dustMultiplier         = { default = nxClosestIndex(multValues, 2.0), values = multValues, strings = multStrings },
+        plowingEnabled         = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        wheelPhysicsEnabled    = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        realisticEngineEnabled = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        hudEnabled             = { default = 1, values = { true, false }, strings = nxOnOffStrings() }
     }
 end
 
@@ -73,7 +73,7 @@ function NXFarmKitSettings.applyToSubsystems()
     local v = NXFarmKitSettings.values
 
     if rawget(_G, "NXFieldPhysics") ~= nil then
-        NXFieldPhysics.mudSprayerEnabled = v.mudSprayerEnabled == true
+        NXFieldPhysics.mudSprayerEnabled = v.densityEnabled == true
     end
     if rawget(_G, "NXFieldPhysicsDensity") ~= nil then
         NXFieldPhysicsDensity:setEnabled(v.densityEnabled == true)
@@ -90,6 +90,11 @@ function NXFarmKitSettings.applyToSubsystems()
 
     if rawget(_G, "NXRealisticWheelPhysics") ~= nil then
         NXRealisticWheelPhysics.enabled = v.wheelPhysicsEnabled == true
+        NXRealisticWheelPhysics.engineRpmModeEnabled = v.realisticEngineEnabled == true
+    end
+
+    if rawget(_G, "NXDustMechanics") ~= nil then
+        NXDustMechanics.engineRpmModeEnabled = v.realisticEngineEnabled == true
     end
 
     if rawget(_G, "NXFarmKitHUD") ~= nil then
@@ -140,12 +145,12 @@ function NXFarmKitSettings.load()
         if v ~= nil then NXFarmKitSettings.values[key] = v end
     end
 
-    readBool("mudSprayerEnabled")
     readBool("densityEnabled")
     readBool("dustEnabled")
     readFloat("dustMultiplier")
     readBool("plowingEnabled")
     readBool("wheelPhysicsEnabled")
+    readBool("realisticEngineEnabled")
     readBool("hudEnabled")
 
     delete(xml)
@@ -162,13 +167,13 @@ function NXFarmKitSettings.save()
     if xml == 0 then return end
 
     local v = NXFarmKitSettings.values
-    setXMLBool(xml,  "nx.settings#mudSprayerEnabled",   v.mudSprayerEnabled   == true)
-    setXMLBool(xml,  "nx.settings#densityEnabled",      v.densityEnabled      == true)
-    setXMLBool(xml,  "nx.settings#dustEnabled",         v.dustEnabled         == true)
-    setXMLFloat(xml, "nx.settings#dustMultiplier",      v.dustMultiplier or 2.0)
-    setXMLBool(xml,  "nx.settings#plowingEnabled",      v.plowingEnabled      == true)
-    setXMLBool(xml,  "nx.settings#wheelPhysicsEnabled", v.wheelPhysicsEnabled == true)
-    setXMLBool(xml,  "nx.settings#hudEnabled",          v.hudEnabled          == true)
+    setXMLBool(xml,  "nx.settings#densityEnabled",         v.densityEnabled         == true)
+    setXMLBool(xml,  "nx.settings#dustEnabled",            v.dustEnabled            == true)
+    setXMLFloat(xml, "nx.settings#dustMultiplier",         v.dustMultiplier or 2.0)
+    setXMLBool(xml,  "nx.settings#plowingEnabled",         v.plowingEnabled         == true)
+    setXMLBool(xml,  "nx.settings#wheelPhysicsEnabled",    v.wheelPhysicsEnabled    == true)
+    setXMLBool(xml,  "nx.settings#realisticEngineEnabled", v.realisticEngineEnabled == true)
+    setXMLBool(xml,  "nx.settings#hudEnabled",             v.hudEnabled             == true)
 
     saveXMLFile(xml)
     delete(xml)
@@ -194,26 +199,26 @@ end
 
 function NXFarmKitSettingsEvent:readStream(streamId, connection)
     self.values = {
-        mudSprayerEnabled   = streamReadBool(streamId),
-        densityEnabled      = streamReadBool(streamId),
-        dustEnabled         = streamReadBool(streamId),
-        dustMultiplier      = streamReadFloat32(streamId),
-        plowingEnabled      = streamReadBool(streamId),
-        wheelPhysicsEnabled = streamReadBool(streamId),
-        hudEnabled          = streamReadBool(streamId)
+        densityEnabled         = streamReadBool(streamId),
+        dustEnabled            = streamReadBool(streamId),
+        dustMultiplier         = streamReadFloat32(streamId),
+        plowingEnabled         = streamReadBool(streamId),
+        wheelPhysicsEnabled    = streamReadBool(streamId),
+        realisticEngineEnabled = streamReadBool(streamId),
+        hudEnabled             = streamReadBool(streamId)
     }
     self:run(connection)
 end
 
 function NXFarmKitSettingsEvent:writeStream(streamId, connection)
     local v = self.values
-    streamWriteBool(streamId,    v.mudSprayerEnabled   == true)
-    streamWriteBool(streamId,    v.densityEnabled      == true)
-    streamWriteBool(streamId,    v.dustEnabled         == true)
+    streamWriteBool(streamId,    v.densityEnabled         == true)
+    streamWriteBool(streamId,    v.dustEnabled            == true)
     streamWriteFloat32(streamId, v.dustMultiplier or 2.0)
-    streamWriteBool(streamId,    v.plowingEnabled      == true)
-    streamWriteBool(streamId,    v.wheelPhysicsEnabled == true)
-    streamWriteBool(streamId,    v.hudEnabled          == true)
+    streamWriteBool(streamId,    v.plowingEnabled         == true)
+    streamWriteBool(streamId,    v.wheelPhysicsEnabled    == true)
+    streamWriteBool(streamId,    v.realisticEngineEnabled == true)
+    streamWriteBool(streamId,    v.hudEnabled             == true)
 end
 
 function NXFarmKitSettingsEvent:run(connection)

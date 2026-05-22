@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUIProfiles>
+    <Profile name="fs25_multiTextOptionContainerNx" extends="fs25_multiTextOptionContainer">
+		<imageColor value="0 0 0 0.4" />
+    </Profile>
+</GUIProfiles>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="towingChain1m.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.3"/>
+  </Asset>
+
+  <Files>
+    <File fileId="6" filename="$data/shaders/vehicleShader.xml"/>
+    <File fileId="8" filename="$data/shared/detailLibrary/flat_normal.dds"/>
+    <File fileId="9" filename="$data/shared/detailLibrary/metallic/silverScratched_diffuse.dds"/>
+    <File fileId="7" filename="$data/shared/detailLibrary/metallic/silverScratched_specular.dds"/>
+    <File fileId="3" filename="$data/shared/white_diffuse.dds"/>
+    <File fileId="4" filename="textures/towingChain_normal.png"/>
+    <File fileId="5" filename="textures/towingChain_vmask.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="acmat_1" materialId="227" diffuseColor="1 1 1 1" specularColor="0.2 1 0.2">
+    </Material>
+    <Material name="towingChain_mat" materialId="290" customShaderId="6">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+      <Custommap name="detailSpecular" fileId="7"/>
+      <Custommap name="detailNormal" fileId="8"/>
+      <Custommap name="detailDiffuse" fileId="9"/>
+    </Material>
+    <Material name="towingChainRed_mat" materialId="291" customShaderId="6">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+      <Custommap name="detailSpecular" fileId="7"/>
+      <Custommap name="detailNormal" fileId="8"/>
+      <Custommap name="detailDiffuse" fileId="9"/>
+      <CustomParameter name="colorScale" value="0.9 0 0"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="229" diffuseColor="1 1 1 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="towingChain1m.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="0mesh" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="324" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain" translation="-0.000216126 -5.39582e-05 0.000135389" rotation="-180 5.00895e-06 90" shapeId="2" nodeId="325" castsShadows="true" receiveShadows="true" materialIds="291">
+        <TransformGroup name="transform" translation="0.500054 0.000216107 -0.119904" rotation="180 5.00895e-06 -5.00896e-06" nodeId="326"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="327" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+      <TransformGroup name="attacherJoint" translation="0 0.5 0" rotation="-180 -90 180" nodeId="328"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.125" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="329" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.001" translation="-0.000216167 -5.39473e-05 -0.124865" rotation="-180 5.00895e-06 90" shapeId="4" nodeId="330" castsShadows="true" receiveShadows="true" materialIds="291">
+        <TransformGroup name="transform" translation="0.500054 0.000216127 -0.244904" rotation="-180 9.33467e-06 90" nodeId="331"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="332" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.255" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="333" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.002" translation="-0.000216167 -5.39359e-05 -0.254865" rotation="-180 5.00895e-06 90" shapeId="5" nodeId="334" castsShadows="true" receiveShadows="true" materialIds="291">
+        <TransformGroup name="transform" translation="0.500054 0.000216106 -0.374904" rotation="180 5.00895e-06 -5.00896e-06" nodeId="335"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="336" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.384" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="337" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.003" translation="-0.000216167 -5.39246e-05 -0.383865" rotation="-180 5.00895e-06 90" shapeId="6" nodeId="338" castsShadows="true" receiveShadows="true" materialIds="291">
+        <TransformGroup name="transform" translation="0.500054 0.000216085 -0.503904" rotation="-180 9.33467e-06 90" nodeId="339"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="340" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.517" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="341" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.004" translation="-0.000216167 -5.3913e-05 -0.516865" rotation="-180 5.00895e-06 90" shapeId="7" nodeId="342" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000216063 -0.636904" rotation="180 5.00895e-06 -5.00896e-06" nodeId="343"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="344" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="5mesh" translation="0 0 -0.652" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="345" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.005" translation="-0.000216167 -5.39012e-05 -0.651865" rotation="-180 5.00895e-06 90" shapeId="8" nodeId="346" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000216041 -0.771904" rotation="-180 9.33467e-06 90" nodeId="347"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="348" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.783" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="349" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.006" translation="-0.000216167 -5.38898e-05 -0.782865" rotation="-180 5.00895e-06 90" shapeId="9" nodeId="350" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.00021602 -0.902904" rotation="180 5.00895e-06 -5.00896e-06" nodeId="351"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="352" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -0.912" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="353" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.007" translation="-0.000216167 -5.38785e-05 -0.911865" rotation="-180 5.00895e-06 90" shapeId="10" nodeId="354" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215999 -1.0319" rotation="-180 9.33467e-06 90" nodeId="355"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="356" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -1.039" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="357" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.008" translation="-0.000216167 -5.38674e-05 -1.03886" rotation="-180 5.00895e-06 90" shapeId="11" nodeId="358" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215978 -1.1589" rotation="180 5.00895e-06 -5.00896e-06" nodeId="359"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="360" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -1.168" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="361" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.009" translation="-0.000216167 -5.38561e-05 -1.16786" rotation="-180 5.00895e-06 90" shapeId="12" nodeId="362" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215957 -1.2879" rotation="-180 9.33467e-06 90" nodeId="363"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="364" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="10mesh" translation="0 0 -1.297" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="365" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.010" translation="-0.000216167 -5.38448e-05 -1.29686" rotation="-180 5.00895e-06 90" shapeId="13" nodeId="366" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215936 -1.4169" rotation="180 5.00895e-06 -5.00896e-06" nodeId="367"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="368" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -1.427" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="369" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.011" translation="-0.000216167 -5.38335e-05 -1.42686" rotation="-180 5.00895e-06 90" shapeId="14" nodeId="370" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215915 -1.5469" rotation="-180 9.33467e-06 90" nodeId="371"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="372" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+    </Shape>
+    <Shape name="mesh" translation="0 0 -1.557" rotation="-180 0 -180" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="373" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="227">
+      <Shape name="towingChain.012" translation="-0.000216167 -5.38221e-05 -1.55686" rotation="-180 5.00895e-06 90" shapeId="15" nodeId="374" castsShadows="true" receiveShadows="true" materialIds="290">
+        <TransformGroup name="transform" translation="0.500054 0.000215894 -1.6769" rotation="180 5.00895e-06 -5.00896e-06" nodeId="375"/>
+      </Shape>
+      <Shape name="colis" translation="-9.58783e-05 0.5 0" shapeId="3" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.01" clipDistance="300" nodeId="376" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="229"/>
+      <TransformGroup name="attachJointHook" translation="-3.03009e-09 0.5 0.09" rotation="1.29673e-12 90 1.00179e-05" nodeId="601"/>
+      <Camera name="camera" translation="-1.26412 1.55278 -2.37167" rotation="145.393 -43.3151 180" nodeId="446" fov="60" nearClip="0.1" farClip="1000" orthographicHeight="1"/>
+    </Shape>
+  </Scene>
+
+</i3D>

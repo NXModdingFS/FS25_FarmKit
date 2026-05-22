@@ -473,10 +473,12 @@ NXFieldPhysicsDensity.targets = {}
 NXFieldPhysicsDensity.originalLimitFlags = {}
 
 NXFieldPhysicsDensity.DEFAULT_FRUITS = {
-    { name = "MEADOW",     forced = true,  sourceState = "HARVESTREADY", targetState = "GREENMIDDLE" },
-    { name = "GRASS",      forced = false, sourceState = "",             targetState = "" },
-    { name = "FIELDGRASS", forced = false, sourceState = "",             targetState = "" }
+    { name = "MEADOW",     forced = true,  sourceState = "",             targetState = "" },
+    { name = "GRASS",      forced = true,  sourceState = "",             targetState = "" },
+    { name = "FIELDGRASS", forced = true,  sourceState = "",             targetState = "" }
 }
+
+NXFieldPhysicsDensity.SOFTEN_DROP = 3
 
 NXFieldPhysicsDensity.fruits = nil
 
@@ -543,11 +545,9 @@ function NXFieldPhysicsDensity:setEnabled(value)
         self.originalLimitFlags = {}
         self.initialized = false
         self.targets = {}
-        nxLog("Disabled (restored vanilla limitDestructionToField for affected fruits)")
     else
         self.initialized = false
         self.targets = {}
-        nxLog("Enabled")
     end
 end
 
@@ -628,10 +628,6 @@ function NXFieldPhysicsDensity:createTarget(fruitType)
     end
 
     if isForced then
-        if self.originalLimitFlags[fruitType] == nil then
-            self.originalLimitFlags[fruitType] = fruitType.limitDestructionToField
-        end
-        fruitType.limitDestructionToField = false
         self:applyForcedWheelDestructionStates(fruitType, config)
     end
 
@@ -703,21 +699,35 @@ function NXFieldPhysicsDensity:initializeTargets()
         end
     end
 
-    nxLog(string.format("Initialized %d outside-field target(s)", #self.targets))
 end
 
 function NXFieldPhysicsDensity:applyTargetToArea(target, x0, z0, x1, z1, x2, z2)
     target.modifier:setParallelogramWorldCoords(x0, z0, x1, z1, x2, z2, DensityCoordType.POINT_POINT_POINT)
 
+    local drop = NXFieldPhysicsDensity.SOFTEN_DROP or 3
     for sourceState = target.minState, target.maxState do
         target.filter:setValueCompareParams(DensityValueCompareType.EQUAL, sourceState)
-        target.modifier:executeSet(target.targetState, target.filter)
+        local softened = math.max(target.targetState, sourceState - drop)
+        target.modifier:executeSet(softened, target.filter)
     end
 end
 
 function NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, vehicle)
     if not self.enabled then return end
     if self.SERVER_ONLY and g_server == nil then return end
+
+    if g_farmlandManager ~= nil and g_farmlandManager.getFarmlandAtWorldPosition ~= nil then
+        local px = x1 + x2 - x0
+        local pz = z1 + z2 - z0
+        local cx = (x0 + x1 + x2 + px) * 0.25
+        local cz = (z0 + z1 + z2 + pz) * 0.25
+        local samples = { x0, z0, x1, z1, x2, z2, px, pz, cx, cz }
+        for i = 1, #samples, 2 do
+            if g_farmlandManager:getFarmlandAtWorldPosition(samples[i], samples[i+1]) ~= nil then
+                return
+            end
+        end
+    end
 
     self:initializeTargets()
     if #self.targets == 0 then return end
@@ -730,11 +740,10 @@ function NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z
     end
 end
 
-function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt, allowFoliageDestruction)
+function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt)
     local self = NXFieldPhysicsDensity
     if not self.enabled then return end
     if self.SERVER_ONLY and g_server == nil then return end
-    if not allowFoliageDestruction then return end
     if wheelDestruction == nil or wheelDestruction.wheel == nil then return end
     if wheelDestruction.isCareWheel then return end
     if type(wheelDestruction.destructionNodes) ~= "table" then return end
@@ -767,27 +776,7 @@ function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt, allo
 end
 
 function NXFieldPhysicsDensity:installHooks()
-    if self.hooksInstalled then return true end
-    if WheelDestruction == nil then return false end
-
-    if WheelDestruction.destroyFruitArea ~= nil then
-        WheelDestruction.destroyFruitArea = Utils.overwrittenFunction(WheelDestruction.destroyFruitArea, function(wheelDestruction, superFunc, x0, z0, x1, z1, x2, z2)
-            if NXFieldPhysicsDensity.RUN_BASEGAME_FIRST then
-                superFunc(wheelDestruction, x0, z0, x1, z1, x2, z2)
-                NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, wheelDestruction.vehicle)
-            else
-                NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, wheelDestruction.vehicle)
-                superFunc(wheelDestruction, x0, z0, x1, z1, x2, z2)
-            end
-        end)
-    end
-
-    if WheelDestruction.update ~= nil then
-        WheelDestruction.update = Utils.appendedFunction(WheelDestruction.update, NXFieldPhysicsDensity.wheelDestructionUpdate)
-    end
-
     self.hooksInstalled = true
-    nxLog("Installed wheel-destruction hooks")
     return true
 end
 
@@ -881,7 +870,6 @@ if not rawget(_G, "_NXFieldPhysics_bootstrapped") then
                 end
             end
         end
-        print(string.format("[%s] Injected %s into %d vehicle types", NXFieldPhysicsRegister.modName, FULL_SPEC_NAME, count))
     end
 
     TypeManager.validateTypes = Utils.appendedFunction(TypeManager.validateTypes, nxInstallSpec)

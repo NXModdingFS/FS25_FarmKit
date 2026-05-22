@@ -1695,6 +1695,12 @@ function NXFarmKitPF.getAverageLitersPerHa(samples, sprayTypeName)
         return nil
     end
 
+    -- Liquid Lime: PF doesn't model it as nitrogen; skip runtime sampling so the
+    -- baseline rate (litersPerSecond * 36000) is preserved by the caller.
+    if sprayTypeName == "LIQUIDLIME" then
+        return nil
+    end
+
     return NXFarmKitPF.getAverageFromSamples(samples, function(sample)
         return NXFarmKitPF.getPFMaterialLitersPerHaForSample(sample, sprayTypeName)
     end)
@@ -1942,7 +1948,7 @@ function NXFarmKitPF.buildFieldEntry(field)
             elseif pfData ~= nil and pfData.isLoaded == true then
                 displayLitersPerHa = NXFarmKitPF.getPFLimeLoadLitersPerHa(rawLitersPerHa)
             end
-        elseif definition.sprayType ~= "HERBICIDE" then
+        elseif definition.sprayType ~= "HERBICIDE" and definition.sprayType ~= "LIQUIDLIME" then
             if hasRuntimeSamples and runtimeLitersPerHa ~= nil then
                 displayLitersPerHa = NXFarmKitPF.getPFNitrogenDisplayLitersPerHa(rawLitersPerHa, definition.sprayType, pfSamples)
             elseif pfData ~= nil and pfData.isLoaded == true then

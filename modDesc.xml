@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>NX Modding</author>
-    <version>1.0.0.0</version>
+    <version>1.0.0.1</version>
     <title>
         <en>FarmKit</en>
         <de>HofKit</de>
@@ -30,6 +30,13 @@ Features:
 Press Right Shift + F to open FarmKit.
 
 Version History:
+• 1.0.0.1
+  - New: Tow Chain — three purchasable towing chains (1.5 m, 2.5 m, 3.5 m) in the shop under Misc, for pulling stuck vehicles out
+    Usage: connect the RED end of the chain to the vehicle you want to tow, then reverse your tow tractor up to the other end of the chain and attach it. Press the attach key again to disconnect.
+  - New: Realistic Engine Mode toggle in settings — engine revs climb as the wheels sink and spin out on field
+  - New: Liquid Lime support — the field dialog shows liquid lime when the Liquid Lime mod is installed
+  - Improved: implement dust now fades away gradually instead of cutting off the instant work stops
+  - Fixed: assorted stability and in-game logging issues
 • 1.0.0.0 (Initial Release)
   - Standalone keybind-driven dialog (Right Shift + F), replaces the in-game menu tab
   - Material overview with farm grouping and selected-field seed toggle
@@ -71,6 +78,13 @@ Funktionen:
 Drücken Sie Rechte Umschalttaste + F, um die FarmKit zu öffnen.
 
 Versionsverlauf:
+• 1.0.0.1
+  - Neu: Abschleppkette — drei kaufbare Abschleppketten (1,5 m, 2,5 m, 3,5 m) im Shop unter Sonstiges, zum Bergen festgefahrener Fahrzeuge
+    Verwendung: Das ROTE Ende der Kette mit dem abzuschleppenden Fahrzeug verbinden, dann mit dem Zugfahrzeug rückwärts an das andere Kettenende fahren und anhängen. Zum Lösen die Anhängen-Taste erneut drücken.
+  - Neu: Einstellung "Realistischer Motormodus" — die Motordrehzahl steigt, wenn die Räder auf dem Feld einsinken und durchdrehen
+  - Neu: Liquid-Lime-Unterstützung — der Feld-Dialog zeigt Flüssigkalk an, wenn der Liquid-Lime-Mod installiert ist
+  - Verbessert: Geräte-Staub verschwindet jetzt allmählich, statt beim Arbeitsende sofort abzubrechen
+  - Behoben: diverse Stabilitäts- und Log-Probleme
 • 1.0.0.0 (Erstveröffentlichung)
   - Eigenständiger Dialog per Tastenbelegung (Rechte Umschalttaste + F), ersetzt den Reiter im Spielmenü
   - Materialübersicht mit Hof-Gruppierung und Saatgut-Umschaltung pro ausgewähltem Feld
@@ -112,6 +126,13 @@ Fonctionnalités:
 Appuyez sur Maj Droite + F pour ouvrir les FarmKit.
 
 Historique des versions:
+• 1.0.0.1
+  - Nouveau : Chaîne de remorquage — trois chaînes de remorquage achetables (1,5 m, 2,5 m, 3,5 m) dans la boutique sous Divers, pour sortir les véhicules embourbés
+    Utilisation : connectez l'extrémité ROUGE de la chaîne au véhicule à remorquer, puis reculez votre tracteur de remorquage jusqu'à l'autre extrémité de la chaîne et attachez-la. Appuyez à nouveau sur la touche d'attache pour détacher.
+  - Nouveau : option « Mode moteur réaliste » dans les réglages — le régime moteur monte lorsque les roues s'enfoncent et patinent dans le champ
+  - Nouveau : prise en charge de Liquid Lime — la boîte de dialogue des champs affiche la chaux liquide lorsque le mod Liquid Lime est installé
+  - Amélioré : la poussière des outils s'estompe désormais progressivement au lieu de s'arrêter net en fin de travail
+  - Corrigé : divers problèmes de stabilité et de journalisation en jeu
 • 1.0.0.0 (Première version)
   - Boîte de dialogue autonome pilotée par raccourci (Maj Droite + F), remplace l'onglet du menu en jeu
   - Aperçu des matériaux avec regroupement par exploitation et bascule semences pour le champ sélectionné
@@ -135,6 +156,13 @@ Historique des versions:
     <l10n filenamePrefix="languages/NXFarmKit_l10n"/>
     <iconFilename>icon_NXFarmKit.dds</iconFilename>
     <multiplayer supported="true" />
+
+    <storeItems>
+        <storeItem xmlFilename="towingChain1m.xml" />
+        <storeItem xmlFilename="towingChain2m.xml" />
+        <storeItem xmlFilename="towingChain3m.xml" />
+    </storeItems>
+
     <extraSourceFiles>
         <sourceFile filename="scripts/NXFarmKit.lua" />
         <sourceFile filename="scripts/NXFarmKitPFBridge.lua" />
@@ -145,12 +173,52 @@ Historique des versions:
         <sourceFile filename="scripts/NXFarmKitHUD.lua" />
         <sourceFile filename="scripts/NXFarmKitSettings.lua" />
     </extraSourceFiles>
+
+    <!-- Towing Chain With Hook by kenny456 & Bullgore — included with permission -->
+    <specializations>
+        <specialization name="towingChainHook" className="FarmKitChainHook" filename="scripts/NXFarmKitChain.lua" />
+    </specializations>
+    <jointTypes>
+        <jointType name="towingHook" />
+    </jointTypes>
+    <vehicleTypes>
+        <type name="towingChainHook" parent="baseAttachable" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
+            <specialization name="towingChainHook" />
+        </type>
+    </vehicleTypes>
+
     <actions>
         <action name="SHOW_FARMKIT_DLG" category="SYSTEM" />
+        <action name="FARMKIT_ATTACH_VEHICLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_VEHICLE_THROTTLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MANUAL_ATTACH" category="ONFOOT" axisType="HALF" displayCategory="PLAYER_INTERACTIVE" ignoreComboMask="false" />
+        <action name="FARMKIT_ATTACH_HOOK" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_SWITCH" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_TOGGLE_STEERING_MODE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_STEER_LEFT" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_STEER_RIGHT" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_CHANGE_ATTACHED_DIRECTION" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_TRIGGER" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_LEFT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_RIGHT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_FORWARD" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_BACKWARD" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_OPEN_MENU" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_OPEN_MENU_VEHICLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
     </actions>
     <inputBinding>
         <actionBinding action="SHOW_FARMKIT_DLG">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_f" />
+        </actionBinding>
+        <!-- Tow Chain: only the attach action is bound. Settings menu, towed-vehicle
+             remote controls and the hook system are all intentionally left unbound. -->
+        <actionBinding action="FARMKIT_ATTACH_VEHICLE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_x" />
+        </actionBinding>
+        <actionBinding action="FARMKIT_MANUAL_ATTACH">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_x" />
         </actionBinding>
     </inputBinding>
 </modDesc>

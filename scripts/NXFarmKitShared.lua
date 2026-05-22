@@ -540,6 +540,81 @@ function NXFarmKitShared.getIsPrecisionFarmingActive()
     return g_modIsLoaded ~= nil and g_modIsLoaded["FS25_precisionFarming"] == true
 end
 
+NXFarmKitShared.GROUND_TYPE_INDEX_MIN = 1
+NXFarmKitShared.GROUND_TYPE_INDEX_MAX = 15
+
+function NXFarmKitShared.getTerrainHeightAtWorldPos(x, z)
+    if g_terrainNode == nil or type(getTerrainHeightAtWorldPos) ~= "function" then
+        return 0
+    end
+
+    local success, y = pcall(getTerrainHeightAtWorldPos, g_terrainNode, x, 0, z)
+    if success then
+        return NXFarmKitShared.getSafeNumber(y)
+    end
+
+    return 0
+end
+
+function NXFarmKitShared.decodeDensityMapChannelValue(densityBits, firstChannel, numChannels)
+    if densityBits == nil or bit32 == nil then
+        return nil
+    end
+
+    local mask = bit32.lshift(1, numChannels) - 1
+    return bit32.band(bit32.rshift(densityBits, firstChannel), mask)
+end
+
+function NXFarmKitShared.getGroundTypeMapData()
+    if g_currentMission == nil or g_currentMission.fieldGroundSystem == nil then
+        return nil
+    end
+
+    if FieldDensityMap == nil or FieldDensityMap.GROUND_TYPE == nil then
+        return nil
+    end
+
+    if type(g_currentMission.fieldGroundSystem.getDensityMapData) ~= "function" then
+        return nil
+    end
+
+    local success, mapId, firstChannel, numChannels = pcall(
+        g_currentMission.fieldGroundSystem.getDensityMapData,
+        g_currentMission.fieldGroundSystem,
+        FieldDensityMap.GROUND_TYPE
+    )
+    if not success or tonumber(mapId) == nil or tonumber(mapId) == 0 then
+        return nil
+    end
+
+    return {
+        mapId = mapId,
+        firstChannel = NXFarmKitShared.getSafeNumber(firstChannel),
+        numChannels = NXFarmKitShared.getSafeNumber(numChannels)
+    }
+end
+
+function NXFarmKitShared.getGroundTypeAtWorldPos(mapData, x, z)
+    if mapData == nil or mapData.mapId == nil or type(getDensityAtWorldPos) ~= "function" then
+        return nil
+    end
+
+    local y = NXFarmKitShared.getTerrainHeightAtWorldPos(x, z)
+    local success, densityBits = pcall(getDensityAtWorldPos, mapData.mapId, x, y, z)
+    if not success then
+        return nil
+    end
+
+    local groundTypeIndex = NXFarmKitShared.decodeDensityMapChannelValue(densityBits, mapData.firstChannel, mapData.numChannels)
+    if groundTypeIndex == nil
+        or groundTypeIndex < NXFarmKitShared.GROUND_TYPE_INDEX_MIN
+        or groundTypeIndex > NXFarmKitShared.GROUND_TYPE_INDEX_MAX then
+        return nil
+    end
+
+    return groundTypeIndex
+end
+
 NXFarmKitShared.DEBUG_CUSTOM_FERTILIZER_BACKEND = false
 NXFarmKitShared._mapCustomFertilizerCache = nil
 NXFarmKitShared._customFertilizerBackendLogged = false
@@ -867,11 +942,37 @@ function NXFarmKitShared.getCustomMapFertilizerDefinitions()
     return cache.customDefinitions or {}
 end
 
+function NXFarmKitShared.isLiquidLimeModActive()
+    return g_modIsLoaded ~= nil and g_modIsLoaded["FS25_Liquid_Lime"] == true
+end
+
+function NXFarmKitShared.getLiquidLimeMaterialDefinition()
+    if not NXFarmKitShared.isLiquidLimeModActive() then return nil end
+
+    local rate = NXFarmKitShared.getSprayTypeRate("LIQUIDLIME")
+    if rate <= 0 then return nil end
+
+    return {
+        key = "custom_liquidlime",
+        sprayType = "LIQUIDLIME",
+        normalizedSprayTypeName = "LIQUIDLIME",
+        litersPerSecond = rate,
+        sprayGroundType = "LIME",
+        isCustomMapFertilizer = true,
+        isLiquidLime = true
+    }
+end
+
 function NXFarmKitShared.getMaterialDefinitionsWithCustomFertilizers()
     local definitions = NXFarmKitShared.getBaseMaterialDefinitions()
 
     for _, definition in ipairs(NXFarmKitShared.getCustomMapFertilizerDefinitions()) do
         definitions[#definitions + 1] = definition
+    end
+
+    local liquidLime = NXFarmKitShared.getLiquidLimeMaterialDefinition()
+    if liquidLime ~= nil then
+        definitions[#definitions + 1] = liquidLime
     end
 
     return definitions

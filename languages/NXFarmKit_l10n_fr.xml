@@ -41,11 +41,8 @@
 
     <text name="nx_menu_section_title"            text="NX FarmKit" />
 
-    <text name="nx_menu_mudSprayerEnabled"         text="Physique de la boue" />
-    <text name="nx_menu_mudSprayerEnabled_tooltip" text="Pulvérise des particules de boue sèche/humide depuis chaque roue motrice au contact du sol. Exclut planteuses, semoirs, charrues et autres catégories d'outils." />
-
     <text name="nx_menu_densityEnabled"            text="Physique du sol" />
-    <text name="nx_menu_densityEnabled_tooltip"    text="Permet aux roues d'écraser l'herbe et la prairie en dehors du masque de champ. N'endommage pas les cultures des champs voisins." />
+    <text name="nx_menu_densityEnabled_tooltip"    text="Effet des roues sur le sol : particules de boue sèche/humide pulvérisées depuis chaque roue motrice au contact du sol, sillons lors du patinage, enfoncement en sol meuble et peinture cultivateur sur les terres possédées. Exclut planteuses, semoirs, charrues et autres catégories d'outils. N'endommage pas les cultures plantées ni la végétation environnante." />
 
     <!-- ============================================================ -->
     <!-- Menu des réglages - Section Mécanique de la poussière           -->
@@ -62,9 +59,85 @@
     <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilise la physique des roues lorsqu'un côté du tracteur s'enfonce dans un sillon — collision de roue plus étroite et amortissement renforcé du côté bas pour réduire les rebonds arcade." />
 
     <text name="nx_menu_wheelPhysicsEnabled"         text="Physique réaliste des roues" />
-    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Physique des roues pilotée par le patinage sur les champs : peinture cultivateur, déformation du terrain, perte d'adhérence, enfoncement et amortissement anti-rebond. Diff/4x4 et pneus larges/chenilles réduisent les dégâts ; conditions humides/lourdes abaissent le seuil." />
+    <text name="nx_menu_wheelPhysicsEnabled_tooltip" text="Effet de la boue et du patinage sur la roue : adhérence réduite sur sol humide, frein visqueux dans la boue, suspension anti-rebond dans les sillons et gerbe de boue lors du patinage. Diff/4x4 et pneus larges/chenilles réduisent les dégâts ; conditions humides/lourdes abaissent le seuil." />
+
+    <text name="nx_menu_realisticEngineEnabled"         text="Mode moteur réaliste" />
+    <text name="nx_menu_realisticEngineEnabled_tooltip" text="Couple l'état moteur à la physique. Lorsque les roues s'enfoncent et patinent dans le champ, le régime cible du moteur monte proportionnellement au degré d'embourbement — la transmission tourne à vide sans traction, le hurlement classique d'un véhicule coincé. N'agit que tant que le joueur accélère. Compatible avec les mods RPM — la dernière écriture l'emporte à chaque tick." />
 
     <text name="nx_menu_hudEnabled"                  text="HUD FarmKit" />
     <text name="nx_menu_hudEnabled_tooltip"          text="HUD FarmKit à l'écran — affiche actuellement le pourcentage de patinage des roues près du compteur (vert / jaune / rouge)." />
+
+    <!-- ============================================================ -->
+    <!-- Towing Chain With Hook (by kenny456 & Bullgore, included with permission) -->
+    <!-- Source mod ships English/German only — English used as French fallback.    -->
+    <!-- ============================================================ -->
+    <text name="input_FARMKIT_ATTACH_VEHICLE"           text="TowingChain - Attach / detach chain to vehicle" />
+    <text name="input_FARMKIT_VEHICLE_THROTTLE"         text="TowingChain - Toggle towed vehicle throttle" />
+    <text name="input_FARMKIT_MANUAL_ATTACH"            text="TowingChain - Attach / detach chain to vehicle by hand" />
+    <text name="input_FARMKIT_ATTACH_HOOK"              text="TowingChain - Mount attaching hook" />
+    <text name="input_FARMKIT_SWITCH"                   text="TowingChain - Switch to next chain" />
+    <text name="input_FARMKIT_STEER_LEFT"               text="TowingChain - Steer left" />
+    <text name="input_FARMKIT_STEER_RIGHT"              text="TowingChain - Steer right" />
+    <text name="input_FARMKIT_TOGGLE_STEERING_MODE"     text="TowingChain - Toggle towed vehicle steering mode" />
+    <text name="input_FARMKIT_CHANGE_ATTACHED_DIRECTION" text="TowingChain - Toggle towed vehicle driving direction" />
+    <text name="input_FARMKIT_MOVE_HOOK_TRIGGER"        text="TowingChain - Move hook" />
+    <text name="input_FARMKIT_MOVE_HOOK_LEFT"           text="Move hook left" />
+    <text name="input_FARMKIT_MOVE_HOOK_RIGHT"          text="Move hook right" />
+    <text name="input_FARMKIT_MOVE_HOOK_FORWARD"        text="Move hook forward" />
+    <text name="input_FARMKIT_MOVE_HOOK_BACKWARD"       text="Move hook backward" />
+    <text name="input_FARMKIT_MOVE_HOOK_UP"             text="Move hook up" />
+    <text name="input_FARMKIT_MOVE_HOOK_DOWN"           text="Move hook down" />
+    <text name="input_FARMKIT_OPEN_MENU"                text="TowingChain - Settings" />
+    <text name="input_FARMKIT_OPEN_MENU_VEHICLE"        text="TowingChain - Settings" />
+    <text name="towingChainVehicleAttach"                   text="Attach Towing Chain to vehicle" />
+    <text name="towingChainVehicleDetach"                   text="Detach Towing Chain from vehicle" />
+    <text name="towingChainVehicleThrottleOn"               text="Turn on towed vehicle throttle" />
+    <text name="towingChainVehicleThrottleOff"              text="Turn off towed vehicle throttle" />
+    <text name="towingChainSelfAttach"                      text="Attach Towing Chain to self" />
+    <text name="towingChainSelfDetach"                      text="Detach Towing Chain from self" />
+    <text name="towingChainMountHook"                       text="Mount towing hook to" />
+    <text name="towingChainUnmountHook"                     text="Unmount towing hook from" />
+    <text name="towingChainSteeringModeOff"                 text="Towed vehicle steering mode: OFF" />
+    <text name="towingChainSteeringModeAuto"                text="Towed vehicle steering mode: AUTO" />
+    <text name="towingChainSteeringModeManual"              text="Towed vehicle steering mode: MANUAL" />
+    <text name="towingChainAttachedDirectionForward"        text="Tow. veh. driving direction: FORWARD" />
+    <text name="towingChainAttachedDirectionBackward"       text="Tow. veh. driving direction: BACKWARD" />
+    <text name="functionTowingChain"                        text="With a towing chain you can pull vehicles. You can mount hook to vehicles that don't have an attacher. You can attach multiple chains together." />
+    <text name="typeDesc_towingChainHook"                   text="Towing Chain" />
+    <text name="towingChainChain"                           text="Chain " />
+    <text name="towingChainAttached"                        text="attached" />
+    <text name="towingChainNotAttached"                     text="not attached" />
+    <text name="towingChainMounted"                         text="hook mounted" />
+    <text name="towingChainNotMounted"                      text="hook not mounted" />
+    <text name="towingChainSelected"                        text=", Selected" />
+    <text name="towingChainThisVehicle"                     text="This vehicle" />
+    <text name="towingChainAlreadyAttached"                 text="has already attached Towing chain." />
+    <text name="towingChainAllChains"                       text="All chains need to be attached in the same direction." />
+    <text name="towingChainThrottleOff"                     text="First turn off throttle of attached vehicle to detach Towing chain!" />
+    <text name="towingChainSteeringOff"                     text="First set steering mode of attached vehicle to OFF to detach Towing chain!" />
+    <text name="towingChainAlreadyHook"                     text="This vehicle has already mounted towing hook from towing chain" />
+    <text name="towingChainFirstDetach1"                    text="First detach towing chain" />
+    <text name="towingChainFirstDetach2"                    text="to unmout towing hook!" />
+    <text name="towingChainFirstUnmount"                    text="First unmount towing hook from" />
+    <text name="towingChainNoDrivable"                      text="No drivable vehicle is attached to the chain." />
+    <text name="gui_nx_Setting"                             text="Réglages FarmKit Tow Chain" />
+    <text name="gui_nx_manualAttachToolTip"                 text="Whether or not player can atach towing chain by hand." />
+    <text name="gui_nx_manualAttach"                        text="Attach by hand" />
+    <text name="gui_nx_showHelpToolTip"                     text="Whether or not mod functions are visible in F1 help menu." />
+    <text name="gui_nx_showHelp"                            text="Show Help" />
+    <text name="gui_nx_showIdsToolTip"                      text="Whether or not chain Id is displayed on chain." />
+    <text name="gui_nx_showIds"                             text="Show chain Id" />
+    <text name="gui_nx_IdsDistanceViewToolTip"              text="Set maximum distance for displaying chain Id." />
+    <text name="gui_nx_IdsDistanceView"                     text="Chain Id distance view" />
+    <text name="gui_nx_chainDistanceViewToolTip"            text="Set maximum distance in which chain can be operated / showed in the list." />
+    <text name="gui_nx_chainDistanceView"                   text="Chain operate distance" />
+    <text name="gui_nx_steeringModeToolTip"                 text="Available steering modes when switching." />
+    <text name="gui_nx_steeringMode"                        text="Steering modes" />
+    <text name="gui_nx_autoOffVehicleToolTip"               text="Automatically turn off towed vehicle's motor / steering before detach." />
+    <text name="gui_nx_autoOffVehicle"                      text="Auto turn off vehicle" />
+    <text name="gui_nx_button_reset"                        text="Reset" />
+    <text name="gui_nx_both"                                text="Both" />
+    <text name="gui_nx_auto"                                text="Auto only" />
+    <text name="gui_nx_manual"                              text="Manual only" />
   </texts>
 </l10n>

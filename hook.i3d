@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="hook.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.3"/>
+  </Asset>
+
+  <Files>
+    <File fileId="6" filename="$data/shaders/vehicleShader.xml"/>
+    <File fileId="8" filename="$data/shared/detailLibrary/flat_normal.dds"/>
+    <File fileId="9" filename="$data/shared/detailLibrary/nonMetallic/metal/metalPainted_diffuse.dds"/>
+    <File fileId="7" filename="$data/shared/detailLibrary/nonMetallic/metal/metalPainted_specular.dds"/>
+    <File fileId="3" filename="$data/shared/white_diffuse.dds"/>
+    <File fileId="4" filename="textures/towingChain_normal.png"/>
+    <File fileId="5" filename="textures/towingChain_vmask.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="acmat_1" materialId="43" diffuseColor="1 1 1 1" specularColor="0.2 1 0.2">
+    </Material>
+    <Material name="towingChain_mat" materialId="62" customShaderId="6">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+      <Custommap name="detailSpecular" fileId="7"/>
+      <Custommap name="detailNormal" fileId="8"/>
+      <Custommap name="detailDiffuse" fileId="9"/>
+      <CustomParameter name="colorScale" value="0.03 0.03 0.03"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="hook.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="0mesh" shapeId="1" dynamic="true" compound="true" staticFriction="0" dynamicFriction="0.01" density="20" solverIterationCount="20" clipDistance="150" nodeId="51" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="43">
+      <TransformGroup name="transform" rotation="180 0 -180" nodeId="52">
+        <Shape name="towingChainHook" translation="-0.000216167 -5.39582e-05 0.000135389" rotation="-180 5.00896e-06 90" scale="0.99 1 0.994" shapeId="2" nodeId="54" castsShadows="true" receiveShadows="true" materialIds="62"/>
+        <TransformGroup name="attacherJointTrailer" translation="-7.57921e-09 -0.0187832 -0.173392" rotation="0 90 0" nodeId="55"/>
+      </TransformGroup>
+      <Camera name="camera" translation="0.373492 0.152131 0.382231" rotation="-17.8799 52.6406 -6.59522e-07" visibility="false" nodeId="57" fov="60" nearClip="0.1" farClip="10000" orthographicHeight="1"/>
+    </Shape>
+  </Scene>
+
+</i3D>

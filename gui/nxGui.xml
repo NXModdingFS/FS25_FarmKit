@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+	<Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+	<GuiElement type="empty" profile="ingameMenuFrameHeaderPanel" position="100px -130px">
+		<Text profile="ingameMenuFrameHeaderText" position="80px 0px" text="gui_nx_Setting" onCreate="onCreateNxGuiHeader"/>
+	</GuiElement>	
+	<GuiElement type="empty" profile="ingameMenuSettingsBox" position="130px -200px">
+		<GuiElement type="boxLayout" profile="ingameMenuSettingsLayout" position="50px -50px">
+			<ScrollingLayout profile="fs25_settingsLayout" id="additionalSettingsLayout" size="1400px 500px">
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="manualAttach" texts="" onCreate="onCreateManualAttach">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_manualAttachToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_manualAttach"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="showHelp" texts="" onCreate="onCreateShowHelp">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_showHelpToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_showHelp"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickShowIds" id="showIds" texts="" onCreate="onCreateShowIds">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_showIdsToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_showIds"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="idsDistanceView" texts="" onCreate="onCreateIdsDistanceView">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_IdsDistanceViewToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_IdsDistanceView"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="chainDistanceView" texts="" onCreate="onCreateChainDistanceView">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_chainDistanceViewToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_chainDistanceView"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="steeringMode" texts="" onCreate="onCreateSteeringMode">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_steeringModeToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_steeringMode"/>
+				</Bitmap>
+				<Bitmap profile="fs25_multiTextOptionContainerNx">
+					<MultiTextOption profile="fs25_settingsMultiTextOption" onClick="onClickMultiOption" id="autoVehicleOff" texts="" onCreate="onCreateAutoOffVehicle">
+						<Text profile="fs25_multiTextOptionTooltip" name="ignore" text="$l10n_gui_nx_autoOffVehicleToolTip"/>
+					</MultiTextOption>
+					<Text profile="fs25_settingsMultiTextOptionTitle" text="$l10n_gui_nx_autoOffVehicle"/>
+				</Bitmap>
+			</ScrollingLayout>
+		</GuiElement>		
+	</GuiElement>
+	<BoxLayout profile="fs25_dialogButtonBox" screenAlign="bottomLeft" positionOrigin="bottomLeft" osition="130px 77px" ize="1050px 60px">
+            <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" />
+            <Button profile="buttonOK" text="$l10n_button_save" onClick="onClickOk"/>
+            <Button profile="buttonCancel" text="$l10n_button_reset" onClick="onClickResetButton"/>
+        </BoxLayout>
+</GUI>
