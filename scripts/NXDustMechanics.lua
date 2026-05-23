@@ -170,6 +170,7 @@ function NXDustMechanics.applyToParticleSystem(ps, toolName, isWheelSystem, shou
     local fadeMs = nxGetFadeTailMs(toolName)
     local emit, life
     local forceEmittingOn = false
+    local releaseForcedEmit = false
 
     if NXDustMechanics.dustEnabled and shouldEmit then
         local m = NXDustMechanics.getEffectiveMultiplier(toolName, isWheelSystem)
@@ -183,10 +184,19 @@ function NXDustMechanics.applyToParticleSystem(ps, toolName, isWheelSystem, shou
         and ps.nxBoostedEmit ~= nil then
         local t = (ps.nxFadeUntil - now) / fadeMs
         if t < 0 then t = 0 elseif t > 1 then t = 1 end
-        emit = nxClamp(ps.nxOrigEmit + (ps.nxBoostedEmit - ps.nxOrigEmit) * t, 0.05, 30.0)
-        life = math.max(80, math.floor(ps.nxBoostedLife or ps.nxOrigLife))
-        forceEmittingOn = true
+        -- ramp emission rate toward 0 so the fade actually stops new particles
+        emit = nxClamp(ps.nxBoostedEmit * t, 0.0, 30.0)
+        -- ramp lifespan from boost back to orig over the fade window so
+        -- in-flight particles don't get truncated when the window expires
+        local boostedLife = ps.nxBoostedLife or ps.nxOrigLife
+        life = math.max(80, math.floor(ps.nxOrigLife + (boostedLife - ps.nxOrigLife) * t))
+        forceEmittingOn  = true
+        ps.nxForcedEmit  = true
     else
+        if ps.nxForcedEmit then
+            releaseForcedEmit = true
+            ps.nxForcedEmit   = nil
+        end
         emit = ps.nxOrigEmit
         life = ps.nxOrigLife
         ps.nxFadeUntil = nil
@@ -200,8 +210,12 @@ function NXDustMechanics.applyToParticleSystem(ps, toolName, isWheelSystem, shou
         ps.nxLastLife = life
         ParticleUtil.setParticleLifespan(ps, life)
     end
-    if forceEmittingOn and ParticleUtil ~= nil and ParticleUtil.setEmittingState ~= nil then
-        ParticleUtil.setEmittingState(ps, true)
+    if ParticleUtil ~= nil and ParticleUtil.setEmittingState ~= nil then
+        if forceEmittingOn then
+            ParticleUtil.setEmittingState(ps, true)
+        elseif releaseForcedEmit then
+            ParticleUtil.setEmittingState(ps, false)
+        end
     end
 end
 
