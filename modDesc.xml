@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>NX Modding</author>
-    <version>1.0.0.1</version>
+    <version>1.0.0.2</version>
     <title>
         <en>FarmKit</en>
         <de>HofKit</de>
@@ -30,6 +30,24 @@ Features:
 Press Right Shift + F to open FarmKit.
 
 Version History:
+• 1.0.0.2
+  - New: Realistic Hauling toggle — trailers actually lose their load when tipped past 15° (sharp turns, terrain rolls, rollovers). Closed tarp adds 15° of headroom and breaches outright past 60°. ~70% of the spilled volume drops on the ground as a pickupable fill patch; ~30% is lost to scatter. Speed-aware discharge while tipping intentionally: stationary tip piles material under the chute, fast tip flings it further. Solid fills only (grain, fertilizer, lime, manure, silage, etc.).
+  - New: Implement Dust Multiplier — second slider in settings that scales only towed/attached implement dust (plough, cultivator, sowing, roller, weeder, mower, mulcher, windrower, baler, combine/forager header). Stacks on top of the global multiplier. Wheel kick-up, combine chopper, grain cleaning and forage harvester bodies still follow the global slider alone.
+  - New: Body roll — chassis visibly leans into corners, scaled by mass and speed; additive over the natural slope tilt so it does not clobber terrain physics
+  - New: Implement engine load — engine torque sags when working a plough/cultivator/sower/etc. on field; scales with implement working width, soil wetness and slope; restored when the implement is raised or detached
+  - New: Wheel dirt accumulation — tyre meshes visibly muddy up under slip on wet ground, shed dirt on dry roads at speed
+  - New: Forage harvester dust — forager bodies and chopper effects now pick up the dust boost (the combine handler couldn't reach them before)
+  - New: Crop damage in wheel track — hard wheel slip kills the foliage under the contact patch without touching the field's cultivation state, so growing crop keeps growing everywhere the wheels didn't actually scrub it
+  - Improved: Speed-aware terrain deformation — combines longitudinal slip × speed with lateral scrub × kinetic energy, so hard turns at 30 mph now damage the field instead of only low-speed creep. Overall deformation magnitudes dialled back; AI workers carve at half rate
+  - Improved: Freeze/thaw banded multiplier — replaces the binary "frozen = no deformation" cutoff. Deep-frozen ground (×0.3) is hard to mark; the thaw band just above 0 °C (×1.8) turns to porridge
+  - Improved: Fill-ratio sink boost — fully loaded trailers sink up to 60% deeper into soft ground than empty ones
+  - Improved: HUD relocated to the top-right alongside the time/date strip. Wheel slip %, ground wetness % with a wet-droplet icon, current precipitation % with a rain-cloud icon, and a countdown to the next or current rain/snow/hail event with its type. A red [STUCK] badge appears when the controlled vehicle is bogged hard enough to need a tow
+  - Improved: Towing chain keybind page cleaned up — unbound hook-movement, towed-vehicle remote and settings actions no longer clutter Options → Controls (basic attach on X stays visible and rebindable)
+  - Fixed: Implement dust no longer cuts off abruptly when work stops — both emission rate and particle lifespan ramp down smoothly over the per-tool fade window
+  - Fixed: Stationary vehicles no longer keep emitting "base-game" dust after stopping — the forced emission state is now released cleanly at the end of the fade window
+  - Fixed: Downhill coast no longer locks the wheels and stops the tractor dead — viscous mud drag only fires under positive throttle input and undoes its previous tick's contribution so it can never compound across frames
+  - Fixed: Wheel slip readout no longer pins at 95% when AI workers or trailer wheels are nearby — tracker now strictly limits to the controlled vehicle's own driven wheels with ground contact
+  - Removed: Crop-stripping under spinning wheels — driving across your own crops no longer reveals bare cultivated soil in the wheel tracks (terrain ruts and foliage-only crop damage handle the realism now)
 • 1.0.0.1
   - New: Tow Chain — three purchasable towing chains (1.5 m, 2.5 m, 3.5 m) in the shop under Misc, for pulling stuck vehicles out
     Usage: connect the RED end of the chain to the vehicle you want to tow, then reverse your tow tractor up to the other end of the chain and attach it. Press the attach key again to disconnect.
@@ -78,6 +96,24 @@ Funktionen:
 Drücken Sie Rechte Umschalttaste + F, um die FarmKit zu öffnen.
 
 Versionsverlauf:
+• 1.0.0.2
+  - Neu: Schalter "Realistischer Transport" — Anhänger verlieren tatsächlich ihre Ladung, wenn sie über 15° kippen (enge Kurven, Geländerollen, Überschläge). Geschlossene Plane verschafft 15° zusätzlichen Spielraum und reißt jenseits von 60° auf. ~70 % der verschütteten Menge fallen als aufnehmbarer Materialhaufen auf den Boden; ~30 % gehen durch Streuverlust verloren. Geschwindigkeitsabhängige Entladung beim absichtlichen Kippen: im Stand entsteht ein enger Haufen unter der Schütte, schnelles Kippen schleudert das Material weiter. Nur Schüttgut (Getreide, Dünger, Kalk, Mist, Silage usw.).
+  - Neu: Geräte-Staub-Multiplikator — zweiter Regler in den Einstellungen, der ausschließlich gezogene/angebaute Geräte-Staubeffekte skaliert (Pflug, Grubber, Sämaschine, Walze, Striegel, Mähwerk, Mulcher, Schwader, Presse, Schneidwerk an Mähdrescher/Feldhäcksler). Wird oben auf den globalen Multiplikator angewendet. Rad-Staub, Mähdrescher-Häcksler, Reinigung und Feldhäcksler-Korpus folgen weiterhin nur dem globalen Regler.
+  - Neu: Karosserie-Neigung — das Chassis lehnt sichtbar in Kurven, skaliert nach Masse und Geschwindigkeit; additiv zur natürlichen Hangneigung
+  - Neu: Geräte-Motorlast — das Motordrehmoment sackt ab beim Arbeiten mit Pflug/Grubber/Sämaschine usw. auf dem Feld; skaliert mit Arbeitsbreite, Bodenfeuchte und Steigung; wird beim Anheben oder Abkuppeln zurückgesetzt
+  - Neu: Reifen-Schmutzaufbau — Reifenmodelle bekommen sichtbar Schmutz unter Schlupf auf nassem Boden, verlieren ihn bei schneller Fahrt auf trockener Straße
+  - Neu: Feldhäcksler-Staub — Feldhäcksler-Korpus und Häcksler-Effekte werden jetzt durch den Staub-Boost erfasst (der Mähdrescher-Handler konnte sie zuvor nicht erreichen)
+  - Neu: Pflanzenschaden in Spurrille — starker Radschlupf zerstört die Pflanzen unter der Aufstandsfläche, ohne den Bearbeitungszustand des Feldes zu ändern
+  - Verbessert: Geschwindigkeitsabhängige Terrain-Verformung — kombiniert Längsschlupf × Geschwindigkeit mit Querreibung × kinetischer Energie, sodass schnelle, harte Kurven das Feld jetzt beschädigen statt nur Langsam-Schleichen. Gesamtwirkung der Verformung reduziert; KI-Arbeiter erzeugen nur halb so tiefe Spuren
+  - Verbessert: Frost-/Tau-Bandkurve — tief gefrorener Boden (×0,3) ist schwer zu markieren; das Tau-Band knapp über 0 °C (×1,8) wird zu Brei
+  - Verbessert: Füllstand-Einsink-Boost — voll beladene Anhänger sinken bis zu 60 % tiefer in weichen Boden als leere
+  - Verbessert: HUD oben rechts neben die Zeit-/Datum-Anzeige verlegt — Radschlupf %, Bodenfeuchte % mit Tropfen-Symbol, Niederschlag % mit Regenwolken-Symbol, Countdown zum nächsten oder aktuellen Regen/Schnee/Hagel mit Art-Angabe, rotes [STUCK]-Symbol wenn das gesteuerte Fahrzeug abgeschleppt werden muss
+  - Verbessert: Abschleppketten-Tastenbelegungs-Seite aufgeräumt — ungebundene Haken-Bewegungs-, Abgeschlepptes-Fahrzeug-Fernbedienungs- und Einstellungsaktionen verstopfen die Optionen → Steuerung-Seite nicht mehr (Anhängen mit X bleibt sichtbar und neu belegbar)
+  - Behoben: Geräte-Staub bricht beim Arbeitsende nicht mehr abrupt ab — Emission und Partikellebensdauer laufen über das werkzeugspezifische Auslaufintervall sanft aus
+  - Behoben: Stehende Fahrzeuge geben nach dem Stopp keinen "Spielstandard"-Staub mehr ab
+  - Behoben: Bergab-Rollen sperrt die Räder nicht mehr und bringt den Traktor nicht zum sofortigen Stillstand — viskoser Schlamm-Widerstand wirkt nur bei positivem Gas und hebt sich jeden Frame selbst auf
+  - Behoben: Schlupf-Anzeige bleibt nicht mehr bei 95 % hängen, wenn KI-Arbeiter oder Anhängerräder in der Nähe sind — der Tracker beschränkt sich jetzt strikt auf die Antriebsräder des gesteuerten Fahrzeugs mit Bodenkontakt
+  - Entfernt: Pflanzen-Abschälen unter durchdrehenden Rädern — beim Überfahren eigener Pflanzen wird in den Spurrillen kein nackter, bearbeiteter Boden mehr freigelegt
 • 1.0.0.1
   - Neu: Abschleppkette — drei kaufbare Abschleppketten (1,5 m, 2,5 m, 3,5 m) im Shop unter Sonstiges, zum Bergen festgefahrener Fahrzeuge
     Verwendung: Das ROTE Ende der Kette mit dem abzuschleppenden Fahrzeug verbinden, dann mit dem Zugfahrzeug rückwärts an das andere Kettenende fahren und anhängen. Zum Lösen die Anhängen-Taste erneut drücken.
@@ -126,6 +162,24 @@ Fonctionnalités:
 Appuyez sur Maj Droite + F pour ouvrir les FarmKit.
 
 Historique des versions:
+• 1.0.0.2
+  - Nouveau : option « Transport réaliste » — les remorques perdent vraiment leur chargement lorsqu'elles basculent au-delà de 15° (virages serrés, basculements en terrain accidenté, retournements). Une bâche fermée offre 15° de marge supplémentaire et cède au-delà de 60°. ~70 % du volume déversé tombe au sol sous forme d'un tas récupérable ; ~30 % est perdu par dispersion. Décharge dépendante de la vitesse lors d'un basculement intentionnel : à l'arrêt forme un tas serré sous la goulotte, un basculement rapide projette la matière plus loin. Matières solides uniquement (céréales, engrais, chaux, fumier, ensilage, etc.).
+  - Nouveau : Multiplicateur poussière outils — deuxième curseur dans les réglages qui ajuste uniquement la poussière des outils tractés/attelés (charrue, cultivateur, semoir, rouleau, désherbeur, faucheuse, broyeur, andaineur, presse, coupe de moissonneuse/ensileuse). S'applique par-dessus le multiplicateur global. La poussière des roues, le hacheur de moissonneuse, le nettoyage et le corps de l'ensileuse suivent uniquement le curseur global.
+  - Nouveau : Inclinaison du châssis — le châssis se penche visiblement dans les virages, dimensionné selon la masse et la vitesse ; additif par-dessus l'inclinaison naturelle du terrain
+  - Nouveau : Charge moteur des outils — le couple moteur s'affaisse lors du travail avec une charrue/cultivateur/semoir au champ ; dimensionné selon la largeur de travail, l'humidité du sol et la pente ; rétabli lorsque l'outil est levé ou décroché
+  - Nouveau : Accumulation de saleté sur les roues — les maillages des pneus se salissent visiblement sous patinage sur sol humide, se nettoient sur routes sèches à vitesse
+  - Nouveau : Poussière de l'ensileuse — les corps des ensileuses et les effets du hacheur bénéficient désormais du boost de poussière (le gestionnaire moissonneuse ne les atteignait pas auparavant)
+  - Nouveau : Dégâts aux cultures dans les ornières — un patinage important détruit les plantes sous le pneu sans toucher à l'état de culture du champ
+  - Amélioré : Déformation du terrain consciente de la vitesse — combine patinage longitudinal × vitesse et abrasion latérale × énergie cinétique, de sorte que les virages serrés à grande vitesse endommagent enfin le champ au lieu seulement de la lenteur. Niveaux de déformation globalement réduits ; les ouvriers IA creusent à la moitié de la cadence
+  - Amélioré : Multiplicateur gel/dégel par bandes — sol profondément gelé (×0,3) difficile à marquer ; la bande de dégel juste au-dessus de 0 °C (×1,8) devient de la bouillie
+  - Amélioré : Boost d'enfoncement selon le taux de remplissage — les remorques entièrement chargées s'enfoncent jusqu'à 60 % de plus dans un sol mou que les vides
+  - Amélioré : HUD repositionné en haut à droite à côté de la bande date/heure — patinage des roues en %, humidité du sol en % avec icône goutte, précipitations en % avec icône nuage de pluie, compte à rebours jusqu'au prochain ou actuel événement de pluie/neige/grêle avec son type, badge rouge [STUCK] quand le véhicule contrôlé est embourbé au point de nécessiter un remorquage
+  - Amélioré : Page de touches de la chaîne de remorquage nettoyée — les actions non liées de déplacement du crochet, de télécommande du véhicule remorqué et de réglages n'encombrent plus Options → Commandes (l'attache de base sur X reste visible et réassignable)
+  - Corrigé : la poussière des outils ne s'arrête plus brutalement en fin de travail — l'émission et la durée de vie des particules s'estompent en douceur sur la fenêtre de fondu propre à chaque outil
+  - Corrigé : les véhicules à l'arrêt n'émettent plus de poussière « par défaut » après l'arrêt
+  - Corrigé : la descente en roue libre ne bloque plus les roues et n'arrête plus le tracteur net — la traînée visqueuse de boue ne se déclenche qu'avec une accélération positive et s'auto-annule à chaque frame
+  - Corrigé : la jauge de patinage ne reste plus bloquée à 95 % lorsque des ouvriers IA ou des roues de remorque sont à proximité — le tracker se limite désormais strictement aux roues motrices du véhicule contrôlé en contact avec le sol
+  - Supprimé : Décapage des cultures sous les roues qui patinent — en traversant ses propres cultures, les ornières ne révèlent plus de sol cultivé nu (la déformation du terrain et les dégâts foliaires uniquement gèrent désormais le réalisme)
 • 1.0.0.1
   - Nouveau : Chaîne de remorquage — trois chaînes de remorquage achetables (1,5 m, 2,5 m, 3,5 m) dans la boutique sous Divers, pour sortir les véhicules embourbés
     Utilisation : connectez l'extrémité ROUGE de la chaîne au véhicule à remorquer, puis reculez votre tracteur de remorquage jusqu'à l'autre extrémité de la chaîne et attachez-la. Appuyez à nouveau sur la touche d'attache pour détacher.
@@ -171,6 +225,7 @@ Historique des versions:
         <sourceFile filename="scripts/NXRealisticPlowing.lua" />
         <sourceFile filename="scripts/NXRealisticWheelPhysics.lua" />
         <sourceFile filename="scripts/NXFarmKitHUD.lua" />
+        <sourceFile filename="scripts/NXLoadSpill.lua" />
         <sourceFile filename="scripts/NXFarmKitSettings.lua" />
     </extraSourceFiles>
 
@@ -190,23 +245,23 @@ Historique des versions:
     <actions>
         <action name="SHOW_FARMKIT_DLG" category="SYSTEM" />
         <action name="FARMKIT_ATTACH_VEHICLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_VEHICLE_THROTTLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
         <action name="FARMKIT_MANUAL_ATTACH" category="ONFOOT" axisType="HALF" displayCategory="PLAYER_INTERACTIVE" ignoreComboMask="false" />
-        <action name="FARMKIT_ATTACH_HOOK" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_SWITCH" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_TOGGLE_STEERING_MODE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_STEER_LEFT" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_STEER_RIGHT" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_CHANGE_ATTACHED_DIRECTION" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_TRIGGER" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_LEFT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_RIGHT" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_FORWARD" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_BACKWARD" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_UP" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_DOWN" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_OPEN_MENU" category="ONFOOT" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_OPEN_MENU_VEHICLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_VEHICLE_THROTTLE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_ATTACH_HOOK" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_SWITCH" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_TOGGLE_STEERING_MODE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_STEER_LEFT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_STEER_RIGHT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_CHANGE_ATTACHED_DIRECTION" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_TRIGGER" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_LEFT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_RIGHT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_FORWARD" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_BACKWARD" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_UP" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_MOVE_HOOK_DOWN" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_OPEN_MENU" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
+        <action name="FARMKIT_OPEN_MENU_VEHICLE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
     </actions>
     <inputBinding>
         <actionBinding action="SHOW_FARMKIT_DLG">

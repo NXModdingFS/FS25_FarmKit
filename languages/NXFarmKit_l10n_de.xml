@@ -54,8 +54,11 @@
     <text name="nx_menu_dustEnabled"              text="Staubmechanik" />
     <text name="nx_menu_dustEnabled_tooltip"      text="Hauptschalter für das Staub-Skalierungssystem. Im Aus-Zustand wird das Standardverhalten der Spielpartikel auf allen Geräten wiederhergestellt." />
 
-    <text name="nx_menu_dustMultiplier"           text="Staub-Multiplikator" />
-    <text name="nx_menu_dustMultiplier_tooltip"   text="Globale Intensität aller Geräte-Staubeffekte (Pflug, Grubber, Mähdrescher, Mäher, Räder usw.). 100% entspricht dem Spielstandard, 200% ist der Mod-Standard." />
+    <text name="nx_menu_dustMultiplier"                   text="Staub-Multiplikator" />
+    <text name="nx_menu_dustMultiplier_tooltip"           text="Globale Intensität aller Staubeffekte (Pflug, Grubber, Mähdrescher, Mäher, Räder usw.). 100% entspricht dem Spielstandard, 200% ist der Mod-Standard." />
+
+    <text name="nx_menu_implementDustMultiplier"         text="Geräte-Staub-Multiplikator" />
+    <text name="nx_menu_implementDustMultiplier_tooltip" text="Zusätzlicher Multiplikator, der oben auf den globalen Staub-Multiplikator angewendet wird, jedoch nur auf gezogene/angebaute Geräte (Pflug, Grubber, Sämaschine, Walze, Striegel, Mähwerk, Mulcher, Schwader, Presse sowie das Schneidwerk an Mähdrescher/Feldhäcksler). Selbstfahrender Fahrzeugstaub (Mähdrescher-Häcksler, Reinigung, Feldhäcksler) und Rad-Staub bleiben unberührt — diese folgen ausschließlich dem globalen Regler. 100% bedeutet keine zusätzliche Anpassung; höher verstärkt nur die Geräte, niedriger reduziert sie." />
 
     <text name="nx_menu_plowingEnabled"           text="Realistisches Pflügen" />
     <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilisiert die Radphysik, wenn eine Traktorseite in eine Furche absinkt — schmalere Radkollision und stärkere Dämpfung auf der unteren Seite gegen unrealistisches Aufschaukeln." />
@@ -65,6 +68,9 @@
 
     <text name="nx_menu_realisticEngineEnabled"         text="Realistischer Motormodus" />
     <text name="nx_menu_realisticEngineEnabled_tooltip" text="Koppelt den Motorzustand an die Physik. Wenn die Räder auf dem Feld einsinken und durchdrehen, steigt die Soll-Drehzahl des Motors proportional zum Festfahrgrad — der Antriebsstrang dreht im Leerlauf ohne Traktion, der klassische Festfahr-Sound. Wirkt nur, solange der Spieler Gas gibt. Kompatibel mit RPM-Mods — bei jedem Tick gewinnt der letzte Schreibvorgang." />
+
+    <text name="nx_menu_loadSpillEnabled"         text="Realistischer Transport" />
+    <text name="nx_menu_loadSpillEnabled_tooltip" text="Anhänger verlieren ihre Ladung, wenn sie über einen kritischen Winkel kippen. Das Verschütten beginnt bei 15° und erreicht bei 120° das Maximum; eine geschlossene Plane verschafft 15° zusätzlichen Spielraum und reißt jenseits von 60° auf. Etwa 70 % der verschütteten Menge fallen als aufnehmbarer Materialhaufen auf den Boden (mit einem Lader bergbar); die restlichen 30 % gehen durch Streuverlust verloren. Geschwindigkeitsabhängige Entladung beim absichtlichen Kippen — schnelles Kippen schleudert das Material weiter, im Stand entsteht ein enger Haufen unter der Schütte. Nur Schüttgut (Getreide, Dünger, Kalk, Mist, Silage); Flüssigkeiten sowie PKW/LKW sind ausgenommen." />
 
     <text name="nx_menu_hudEnabled"                  text="FarmKit HUD" />
     <text name="nx_menu_hudEnabled_tooltip"          text="On-Screen FarmKit HUD — zeigt aktuell den Radschlupf in Prozent neben dem Tacho an (grün / gelb / rot)." />

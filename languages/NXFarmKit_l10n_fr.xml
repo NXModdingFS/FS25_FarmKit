@@ -52,8 +52,11 @@
     <text name="nx_menu_dustEnabled"              text="Mécanique de la poussière" />
     <text name="nx_menu_dustEnabled_tooltip"      text="Interrupteur principal du système de mise à l'échelle de la poussière. Lorsqu'il est désactivé, le comportement vanilla des particules est restauré sur tous les outils." />
 
-    <text name="nx_menu_dustMultiplier"           text="Multiplicateur de poussière" />
-    <text name="nx_menu_dustMultiplier_tooltip"   text="Intensité globale pour tous les effets de poussière des outils (charrue, cultivateur, moissonneuse, faucheuse, roues, etc.). 100% correspond au comportement du jeu, 200% est la valeur par défaut du mod." />
+    <text name="nx_menu_dustMultiplier"                   text="Multiplicateur de poussière" />
+    <text name="nx_menu_dustMultiplier_tooltip"           text="Intensité globale pour tous les effets de poussière (charrue, cultivateur, moissonneuse, faucheuse, roues, etc.). 100% correspond au comportement du jeu, 200% est la valeur par défaut du mod." />
+
+    <text name="nx_menu_implementDustMultiplier"         text="Multiplicateur poussière outils" />
+    <text name="nx_menu_implementDustMultiplier_tooltip" text="Multiplicateur supplémentaire appliqué par-dessus le multiplicateur global, mais uniquement à la poussière des outils tractés/attelés (charrue, cultivateur, semoir, rouleau, désherbeur, faucheuse, broyeur, andaineur, presse, ainsi que la coupe attelée à la moissonneuse/ensileuse). La poussière des véhicules automoteurs (hacheur de moissonneuse, nettoyage, ensileuse) et la poussière des roues ne sont pas affectées — elles suivent uniquement le curseur global. 100% signifie aucun ajustement supplémentaire ; au-dessus amplifie les outils, en dessous les réduit." />
 
     <text name="nx_menu_plowingEnabled"           text="Labour réaliste" />
     <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilise la physique des roues lorsqu'un côté du tracteur s'enfonce dans un sillon — collision de roue plus étroite et amortissement renforcé du côté bas pour réduire les rebonds arcade." />
@@ -63,6 +66,9 @@
 
     <text name="nx_menu_realisticEngineEnabled"         text="Mode moteur réaliste" />
     <text name="nx_menu_realisticEngineEnabled_tooltip" text="Couple l'état moteur à la physique. Lorsque les roues s'enfoncent et patinent dans le champ, le régime cible du moteur monte proportionnellement au degré d'embourbement — la transmission tourne à vide sans traction, le hurlement classique d'un véhicule coincé. N'agit que tant que le joueur accélère. Compatible avec les mods RPM — la dernière écriture l'emporte à chaque tick." />
+
+    <text name="nx_menu_loadSpillEnabled"         text="Transport réaliste" />
+    <text name="nx_menu_loadSpillEnabled_tooltip" text="Les remorques perdent vraiment leur chargement lorsqu'elles basculent au-delà d'un angle critique. Le déversement commence à 15° et atteint son maximum à 120° ; une bâche fermée offre 15° de marge supplémentaire et cède au-delà de 60°. Environ 70 % du volume déversé tombe au sol sous forme d'un tas de matière récupérable (à la chargeuse) ; les 30 % restants sont perdus par dispersion. Décharge dépendante de la vitesse lors d'un basculement intentionnel — un basculement rapide projette la matière plus loin, un basculement à l'arrêt forme un tas serré sous la goulotte. Matières solides uniquement (céréales, engrais, chaux, fumier, ensilage) ; les liquides et les voitures/camions sont exclus." />
 
     <text name="nx_menu_hudEnabled"                  text="HUD FarmKit" />
     <text name="nx_menu_hudEnabled_tooltip"          text="HUD FarmKit à l'écran — affiche actuellement le pourcentage de patinage des roues près du compteur (vert / jaune / rouge)." />

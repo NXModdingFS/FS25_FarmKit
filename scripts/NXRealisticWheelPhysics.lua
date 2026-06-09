@@ -28,24 +28,8 @@ local GROUND_PROFILES = {
 local DEFAULT_ON_FIELD_PROFILE = { name = "OnField", gripMult = 1.0, sinkMult = 1.0, deformMult = 1.0, brakeMult = 1.0 }
 
 local CFG = {
-    slipThreshold      = 0.20,
     minSpeedKmh        = 1.0,
     minSpeedMs         = 0.3,
-
-    frontDiffFactor    = 0.55,
-    rearDiffFactor     = 0.55,
-    bothDiffFactor     = 0.60,
-    fourWDFactor       = 0.40,
-
-    wetMin             = 0.05,
-    wetThresholdFloor  = 0.08,
-
-    weightMinT         = 5.0,
-    weightMaxT         = 25.0,
-    weightThresholdFloor = 0.12,
-
-    vtpPressureMin     = 0.8,
-    vtpPressureMax     = 2.4,
 
     gripMinWetness     = 0.15,
     gripDryFieldFactor = 0.97,
@@ -62,16 +46,27 @@ local CFG = {
     sinkSpeedIn        = 0.6,
     sinkSpeedOut       = 1.2,
 
-    deformSlipMin      = 0.35,
-    deformSlipFull     = 0.80,
+    -- Deformation tuning. Slip threshold sits well above normal working slip so a
+    -- healthy field isn't torn up by every pass — but once a wheel IS genuinely
+    -- digging in, the rut goes deep. Terrain deformation only changes height-map,
+    -- not the foliage density layer, so even a 12 cm rut leaves the wheat above
+    -- it growing — the crop is never destroyed by the wheel itself. AI workers
+    -- (which can't drive defensively) are halved by deformAiMult.
+    deformSlipMin      = 0.55,
+    deformSlipFull     = 0.95,
     deformMaxDepth     = 0.12,
-    deformTickDepth    = 0.0015,
-    deformWetMult      = 1.3,
+    deformTickDepth    = 0.0018,
+    deformWetMult      = 1.25,
     deformIntervalMs   = 500,
     deformRadiusMul    = 0.65,
     deformHardness     = 0.25,
     deformMinSpeedKmh  = 0.8,
     deformBehindOffset = 0.8,
+    deformAiMult       = 0.50,
+
+    deformSpeedRefKmh    = 22.0,
+    deformLateralFullKmh = 45.0,
+    deformLongLowSpeedFloor = 0.25,
 
     deformDisableDisplacement = true,
     deformDampingMult  = 2.2,
@@ -93,6 +88,32 @@ local CFG = {
 
     tireRefWidth       = 0.50,
     tireRefRadius      = 0.70,
+
+    bodyRollGain          = 0.00012,
+    bodyRollMax           = 0.20,
+    bodyRollResponsePerS  = 4.5,
+    bodyRollMassFullKg    = 6000,
+    bodyRollMassMinKg     = 16000,
+    bodyRollMinSpeedKmh   = 3.0,
+
+    implementLoadMinDemand = 0.05,
+    implementLoadMax       = 0.55,
+    implementLoadWetMult   = 1.30,
+    implementLoadSlopeMult = 1.40,
+
+    freezeHardC            = -2.0,
+    freezeHardMult         = 0.30,
+    thawWindowLowC         = 0.0,
+    thawWindowHighC        = 3.0,
+    thawWindowMult         = 1.80,
+
+    dirtAccumPerSec        = 0.45,
+    dirtShedPerSec         = 0.35,
+    dirtSlipMin            = 0.10,
+    dirtShedSpeedKmh       = 25.0,
+    dirtWetnessMin         = 0.10,
+
+    fillSinkBoostMax       = 0.60,
 }
 
 local TIRE_PROFILES = {
@@ -110,6 +131,9 @@ local wheelStates   = {}
 local deformLastMs  = {}
 local deformAccum   = {}
 local currentMaxSlip = 0.0
+
+local bodyRollStates    = setmetatable({}, { __mode = "k" })
+local implementLoadStates = setmetatable({}, { __mode = "k" })
 local frameMaxSlip   = 0.0
 
 local function nxClamp(v, lo, hi)
@@ -700,17 +724,6 @@ local function nxGetIsRaining()
     return ok and raining == true
 end
 
-local function nxGetMassTons(vehicle)
-    if vehicle == nil then return 0 end
-    if vehicle.getTotalMass ~= nil then
-        local kg = vehicle:getTotalMass()
-        if type(kg) == "number" and kg > 0 then return kg / 1000 end
-    end
-    local mSpec = vehicle.spec_motorized
-    if mSpec ~= nil and type(mSpec.mass) == "number" then return mSpec.mass / 1000 end
-    return 0
-end
-
 local function nxDetectTireType(wp)
     local cached = tireTypeCache[wp]
     if cached ~= nil then return cached end
@@ -754,80 +767,6 @@ local function nxDetectTireType(wp)
     return result
 end
 
-local function nxGetDiffSlipFactor(vehicle)
-    if vehicle == nil then return 1.0 end
-
-    local has4WD, hasFront, hasRear = false, false, false
-
-    local wSpec = vehicle.spec_wheels
-    if wSpec ~= nil and (wSpec.isFourWDActive == true or wSpec.fourWDIsActive == true) then has4WD = true end
-
-    local mSpec = vehicle.spec_motorized
-    if mSpec ~= nil then
-        if mSpec.isFourWDActive == true or mSpec.fourWDIsActive == true then has4WD = true end
-        if mSpec.differentials ~= nil then
-            for _, d in ipairs(mSpec.differentials) do
-                if d ~= nil and d.diffIsLocked == true then
-                    if d.diffIndex == 0 then hasFront = true
-                    elseif d.diffIndex == 1 then hasRear = true
-                    else hasFront, hasRear = true, true end
-                end
-            end
-        end
-    end
-
-    if has4WD then return CFG.fourWDFactor end
-    if hasFront and hasRear then return CFG.bothDiffFactor end
-    if hasFront then return CFG.frontDiffFactor end
-    if hasRear  then return CFG.rearDiffFactor end
-    return 1.0
-end
-
-local function nxGetVTPPressureBar(vehicle)
-    if vehicle == nil then return nil end
-    local spec = vehicle.spec_variableTirePressure
-    if spec == nil or spec.currentFactor == nil then return nil end
-
-    local fieldP = tonumber(spec.customFieldPressure or spec.fieldPressure) or 1.0
-    local roadP  = tonumber(spec.customRoadPressure  or spec.roadPressure)  or 2.0
-    local fieldF = spec.fieldDeformationFactor or 1.25
-    local roadF  = spec.roadDeformationFactor  or 0.35
-    local range  = roadF - fieldF
-    if math.abs(range) < 0.001 then
-        return (spec.isRoadMode == true) and roadP or fieldP
-    end
-    local t = nxClamp((spec.currentFactor - fieldF) / range, 0, 1)
-    return fieldP + (roadP - fieldP) * t
-end
-
-local function nxGetVTPDamageFactor(vehicle)
-    local p = nxGetVTPPressureBar(vehicle)
-    if p == nil then return 1.0 end
-    local range = CFG.vtpPressureMax - CFG.vtpPressureMin
-    if range <= 0 then return 1.0 end
-    return nxClamp((p - CFG.vtpPressureMin) / range, 0, 1)
-end
-
-local function nxEffectiveThreshold(vehicle)
-    local th = CFG.slipThreshold
-
-    local wet = nxGetWetness()
-    if wet >= CFG.wetMin then
-        local t = math.min(1.0, (wet - CFG.wetMin) / (1.0 - CFG.wetMin))
-        local wetTh = nxLerp(CFG.slipThreshold, CFG.wetThresholdFloor, t)
-        if wetTh < th then th = wetTh end
-    end
-
-    local tons = nxGetMassTons(vehicle)
-    if tons > CFG.weightMinT then
-        local t = math.min(1.0, (tons - CFG.weightMinT) / (CFG.weightMaxT - CFG.weightMinT))
-        local wTh = nxLerp(CFG.slipThreshold, CFG.weightThresholdFloor, t)
-        if wTh < th then th = wTh end
-    end
-
-    return th
-end
-
 local function nxGetWheelState(wp)
     local st = wheelStates[wp]
     if st == nil then
@@ -844,20 +783,6 @@ local function nxGetWheelState(wp)
     return st
 end
 
-local function nxPaintCultivated(wheel)
-    if wheel == nil or wheel.repr == nil then return end
-    local width  = (wheel.width or 0.5) * 0.5
-    local length = math.max((wheel.width or 0.5) * 0.3, 0.15)
-
-    local x0, _, z0 = localToWorld(wheel.repr,  width, 0, -length)
-    local x1, _, z1 = localToWorld(wheel.repr, -width, 0, -length)
-    local x2, _, z2 = localToWorld(wheel.repr,  width, 0,  length)
-
-    FSDensityMapUtil.updateCultivatorArea(x0, z0, x1, z1, x2, z2, false, true, nil, nil, false, true)
-    if FSDensityMapUtil.eraseTireTrack ~= nil then
-        FSDensityMapUtil.eraseTireTrack(x0, z0, x1, z1, x2, z2)
-    end
-end
 
 local function nxApplyGripReduction(wp, onField, wetness, profile, isFrozen, isRaining, tempC)
     if wp == nil then return end
@@ -912,9 +837,19 @@ local function nxApplyGripReduction(wp, onField, wetness, profile, isFrozen, isR
 
     scale = nxClamp(scale, 0.30, 1.0)
 
+    -- Longitudinal grip controls how the wheel transmits drive torque and engine braking.
+    -- If we drop it as aggressively as lateral grip (which is what makes turns feel like
+    -- mud), lifting the throttle on a soft field lets engine drag overrun the available
+    -- friction and the wheels lock — the tractor stops dead. Floor the long axis higher
+    -- so coasting feels normal, while keeping the lateral reduction that makes muddy
+    -- corners scrub. Same idea for the overall frictionScale: pull it less than the
+    -- pure lateral term.
+    local longScale  = math.max(scale, 0.65)
+    local overallScale = math.max(scale, 0.70)
+
     if st.gripBase.maxLatFriction  ~= nil and type(wp.maxLatFriction)  == "number" then wp.maxLatFriction  = st.gripBase.maxLatFriction  * scale end
-    if st.gripBase.maxLongFriction ~= nil and type(wp.maxLongFriction) == "number" then wp.maxLongFriction = st.gripBase.maxLongFriction * scale end
-    if st.gripBase.frictionScale   ~= nil and type(wp.frictionScale)   == "number" then wp.frictionScale   = st.gripBase.frictionScale   * scale end
+    if st.gripBase.maxLongFriction ~= nil and type(wp.maxLongFriction) == "number" then wp.maxLongFriction = st.gripBase.maxLongFriction * longScale end
+    if st.gripBase.frictionScale   ~= nil and type(wp.frictionScale)   == "number" then wp.frictionScale   = st.gripBase.frictionScale   * overallScale end
 end
 
 local function nxApplyWheelSink(wp, vehicle, onField, slip, dt, profile)
@@ -930,6 +865,10 @@ local function nxApplyWheelSink(wp, vehicle, onField, slip, dt, profile)
         target = t * nxDetectTireType(wp).sinkMult
         if profile ~= nil and type(profile.sinkMult) == "number" then
             target = target * profile.sinkMult
+        end
+        local fill = nxGetVehicleFillRatio(vehicle)
+        if fill > 0 then
+            target = target * (1.0 + CFG.fillSinkBoostMax * fill)
         end
     end
 
@@ -956,16 +895,68 @@ local function nxApplyWheelSink(wp, vehicle, onField, slip, dt, profile)
     end
 end
 
+local function nxDestroyCropsInWheelTrack(wp)
+    if wp == nil or FSDensityMapUtil == nil then return end
+    local wheel = wp.wheel or wp
+    local node = wheel.repr or wheel.node or wheel.driveNode or wp.repr or wp.node
+    if node == nil or node == 0 then return end
+
+    local width  = (wheel.width or 0.5) * 0.5
+    local length = math.max((wheel.width or 0.5) * 0.3, 0.15)
+
+    local x0, _, z0 = localToWorld(node,  width, 0, -length)
+    local x1, _, z1 = localToWorld(node, -width, 0, -length)
+    local x2, _, z2 = localToWorld(node,  width, 0,  length)
+
+    local fn = FSDensityMapUtil.updateDestroyCommonArea
+        or FSDensityMapUtil.destroyCommonArea
+        or FSDensityMapUtil.cutFruitArea
+    if fn ~= nil then
+        pcall(fn, x0, z0, x1, z1, x2, z2)
+    end
+end
+
 local function nxApplySlipDeformation(wp, vehicle, onField, slip, wetness, wx, wz, speedKmh, profile, isFrozen)
     if wp == nil or vehicle == nil or not vehicle.isServer then return end
-    if not onField or isFrozen then return end
+    if not onField then return end
     if g_currentMission == nil or TerrainDeformation == nil or g_currentMission.terrainRootNode == nil then return end
     if speedKmh < CFG.deformMinSpeedKmh then return end
-    if type(slip) ~= "number" or slip <= 0 then return end
+
+    -- Banded freeze/thaw multiplier. Replaces the old "frozen = exit" gate so
+    -- the thaw band just above 0 °C actually produces deeper ruts (porridge
+    -- ground) while deep-frozen ground produces shallower ones.
+    local tempC = nxGetAirTempC()
+    local freezeThawMult = nxGetFreezeThawMult(tempC)
 
     local tire = nxDetectTireType(wp)
     local slipMin = CFG.deformSlipMin * (tire.slipThresholdMult or 1.0)
-    if slip < slipMin then return end
+
+    -- Damage has two contributors:
+    --   (a) Longitudinal slip × speed. wp.slip is drive-axis only — high at low-speed tight
+    --       turns where the inside wheel scrubs and at wheelspin under load. We weight it
+    --       by speed so 7 km/h creep no longer single-handedly maxes deformation.
+    --   (b) Lateral scrub × kinetic energy. Hard steer at speed pushes the tire sideways
+    --       across the ground at |axisSide| × speed; the damage that does scales with
+    --       speed² (energy). This is the term that lets 30 mph hard turns finally tear
+    --       the field, which the slip-only model can't see.
+    local speedScale = nxClamp(speedKmh / CFG.deformSpeedRefKmh, 0, 1)
+
+    local longSlipT = 0
+    if type(slip) == "number" and slip >= slipMin then
+        longSlipT = nxClamp((slip - slipMin) / (CFG.deformSlipFull - slipMin), 0, 1)
+    end
+    local longContribution = longSlipT * (CFG.deformLongLowSpeedFloor + (1 - CFG.deformLongLowSpeedFloor) * speedScale)
+
+    local axisSide = 0
+    if vehicle.spec_drivable ~= nil and type(vehicle.spec_drivable.axisSide) == "number" then
+        axisSide = math.abs(vehicle.spec_drivable.axisSide)
+    end
+    local scrubKmh = axisSide * speedKmh
+    local lateralT = nxClamp(scrubKmh / CFG.deformLateralFullKmh, 0, 1)
+    local lateralContribution = lateralT * speedScale  -- speed already in scrubKmh; speedScale stands in for the energy weighting
+
+    local damageT = math.max(longContribution, lateralContribution)
+    if damageT < 0.05 then return end
 
     local nowMs = g_time or 0
     deformLastMs[wp] = deformLastMs[wp] or 0
@@ -976,8 +967,7 @@ local function nxApplySlipDeformation(wp, vehicle, onField, slip, wetness, wx, w
     local maxTotal = CFG.deformMaxDepth
     if deformAccum[wp] >= maxTotal then return end
 
-    local slipT = nxClamp((slip - slipMin) / (CFG.deformSlipFull - slipMin), 0, 1)
-    local depth = CFG.deformTickDepth * slipT * (tire.damageMult or 1.0)
+    local depth = CFG.deformTickDepth * damageT * (tire.damageMult or 1.0)
 
     if wetness > 0.05 then
         local wetT = nxClamp(wetness, 0, 1)
@@ -988,11 +978,23 @@ local function nxApplySlipDeformation(wp, vehicle, onField, slip, wetness, wx, w
         depth = depth * profile.deformMult
     end
 
+    depth = depth * freezeThawMult
+
+    if vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
+        depth = depth * (CFG.deformAiMult or 0.5)
+    end
+
     local remaining = maxTotal - deformAccum[wp]
     if depth > remaining then depth = remaining end
     if depth <= 0.0005 then return end
 
     deformAccum[wp] = deformAccum[wp] + depth
+
+    -- Kill the crop in the wheel's contact patch (foliage layer only). Same gate
+    -- as the rut, so a hard turn at speed leaves a sunken track AND a bald strip
+    -- through the crop — but the field's cultivation state is untouched, so the
+    -- rest of the area carries on growing.
+    nxDestroyCropsInWheelTrack(wp)
 
     local deformX, deformZ = wx, wz
     local node = wp.repr or wp.node or (wp.wheel and (wp.wheel.repr or wp.wheel.node))
@@ -1092,10 +1094,32 @@ local function nxApplyDeformSuspension(wp, onField, slip, dt)
     end
 end
 
+local function nxReleaseViscousBrake(wp)
+    if wp == nil then return end
+    local prev = wp.__nxLastViscousBrake or 0
+    if prev <= 0 then return end
+    if wp.brakeFactor ~= nil then
+        wp.brakeFactor = math.max(0, (wp.brakeFactor or 0) - prev)
+    elseif wp.additionalBrakeForce ~= nil then
+        wp.additionalBrakeForce = math.max(0, (wp.additionalBrakeForce or 0) - prev)
+    end
+    wp.__nxLastViscousBrake = 0
+end
+
 local function nxApplyViscousBrake(wp, vehicle, onField, slip, wetness, profile, isFrozen)
     if wp == nil or vehicle == nil then return end
     if not vehicle.isServer then return end
-    if not onField or isFrozen or slip < CFG.brakeSlipMin then return end
+    if not onField or isFrozen or slip < CFG.brakeSlipMin then
+        nxReleaseViscousBrake(wp)
+        return
+    end
+
+    local drv = vehicle.spec_drivable
+    local axisForward = (drv ~= nil and drv.axisForward) or 0
+    if axisForward < 0.05 then
+        nxReleaseViscousBrake(wp)
+        return
+    end
 
     local slipOver = slip - CFG.brakeSlipMin
     local force = CFG.brakeBase + CFG.brakeFromSlip * slipOver
@@ -1115,11 +1139,14 @@ local function nxApplyViscousBrake(wp, vehicle, onField, slip, wetness, profile,
 
     local ratio = nxClamp(force * CFG.brakeRatio, 0, CFG.brakeMaxRatio)
     local addBrake = vehicleBrake * ratio
+
+    local prevAdd = wp.__nxLastViscousBrake or 0
     if wp.brakeFactor ~= nil then
-        wp.brakeFactor = (wp.brakeFactor or 0) + addBrake
+        wp.brakeFactor = math.max(0, (wp.brakeFactor or 0) - prevAdd) + addBrake
     elseif wp.additionalBrakeForce ~= nil then
-        wp.additionalBrakeForce = (wp.additionalBrakeForce or 0) + addBrake
+        wp.additionalBrakeForce = math.max(0, (wp.additionalBrakeForce or 0) - prevAdd) + addBrake
     end
+    wp.__nxLastViscousBrake = addBrake
 end
 
 local function nxUpdateSlipBoost(wp, onField, slip, wetness)
@@ -1137,6 +1164,26 @@ local function nxUpdateSlipBoost(wp, onField, slip, wetness)
         boost = boost * nxLerp(1.0, CFG.slipBoostWetMult, nxClamp(wetness, 0, 1))
     end
     wheel._nxSlipBoost = boost
+end
+
+local function nxApplyWheelDirt(wp, wetness, slip, speedKmh, onField, dt)
+    local wheel = wp.wheel or wp
+    if wheel == nil or type(wheel.dirtAmount) ~= "number" then return end
+
+    local dtSec = (dt or 16) / 1000
+    local cur = wheel.dirtAmount
+
+    local accumulating = slip >= CFG.dirtSlipMin and (onField or wetness >= CFG.dirtWetnessMin)
+    if accumulating then
+        local slipT = nxClamp((slip - CFG.dirtSlipMin) / (0.50 - CFG.dirtSlipMin), 0, 1)
+        local wetT  = nxClamp((wetness + 0.2) / 1.2, 0, 1)
+        cur = cur + CFG.dirtAccumPerSec * slipT * wetT * dtSec
+    elseif (not onField) and wetness < CFG.dirtWetnessMin and speedKmh >= CFG.dirtShedSpeedKmh then
+        cur = cur - CFG.dirtShedPerSec * dtSec
+    end
+
+    if cur < 0 then cur = 0 elseif cur > 1 then cur = 1 end
+    wheel.dirtAmount = cur
 end
 
 local function nxOnWheelPhysics(wp, dt)
@@ -1189,10 +1236,11 @@ local function nxOnWheelPhysics(wp, dt)
         nxUpdateSinkMeter(vehicle, onField and not isFrozen, slip, wetness, speedKmh)
         nxApplyEngineBog(vehicle, speedKmh)
         nxApplyBodyTint(vehicle, wx, wz, wetness, tempC, profile)
+        nxApplyBodyRoll(vehicle, dt)
+        nxApplyImplementLoad(vehicle, dt)
+        nxApplyWheelDirt(wp, wetness, slip, speedKmh, onField, dt)
     end
 
-    -- Speed cap latches motor:setSpeedLimit, so it must run even when wheel physics is
-    -- toggled off — the function self-releases any cap it previously applied.
     nxApplySpeedCap(vehicle, speedKmh)
 
     if groundOn then
@@ -1205,34 +1253,220 @@ local function nxOnWheelPhysics(wp, dt)
     end
 end
 
-local function nxTryPaint(wp, vehicle, slip)
-    if not vehicle.isServer or slip <= 0.20 then return end
-    local wheel = wp.wheel
-    if wheel == nil or g_farmlandManager == nil then return end
+local function nxApplyBodyRoll(vehicle, dt)
+    if vehicle == nil or vehicle.rootNode == nil or vehicle.rootNode == 0 then return end
+    if not NXRealisticWheelPhysics.enabled then return end
+    if vehicle.spec_drivable == nil or vehicle.spec_wheels == nil then return end
 
-    local node = wheel.repr or wheel.node or wheel.driveNode
-    if node == nil or node == 0 then return end
+    if vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then return end
 
-    local wx, _, wz = getWorldTranslation(node)
-    local farmland = g_farmlandManager:getFarmlandAtWorldPosition(wx, wz)
-    if farmland == nil then return end
+    local st = bodyRollStates[vehicle]
+    if st == nil then
+        st = { current = 0, prevApplied = 0, lastFrameMs = -1 }
+        bodyRollStates[vehicle] = st
+    end
 
-    local effectiveSlip = slip * nxGetDiffSlipFactor(vehicle)
-    local th = nxEffectiveThreshold(vehicle) * (nxDetectTireType(wp).slipThresholdMult or 1.0)
-    if effectiveSlip <= th then return end
+    local now = g_time or 0
+    if st.lastFrameMs == now then return end
+    st.lastFrameMs = now
 
-    local vtp = nxGetVTPDamageFactor(vehicle)
-    if vtp <= 0.0 then return end
-    local adjustedTh = th + (1.0 - vtp) * (1.0 - th)
-    if effectiveSlip <= adjustedTh then return end
+    local drv = vehicle.spec_drivable
+    local steer = 0
+    if drv.lastInputValues ~= nil and type(drv.lastInputValues.axisSteer) == "number" then
+        steer = drv.lastInputValues.axisSteer
+    elseif type(drv.axisSide) == "number" then
+        steer = drv.axisSide
+    end
 
-    nxPaintCultivated(wheel)
+    local speedKmh = nxGetSpeedKmh(vehicle)
+    local dtSec = (dt or 16) / 1000
+
+    local target = 0
+    if speedKmh >= CFG.bodyRollMinSpeedKmh then
+        local mass = 6000
+        if vehicle.getTotalMass ~= nil then
+            local ok, m = pcall(vehicle.getTotalMass, vehicle)
+            if ok and type(m) == "number" and m > 0 then mass = m end
+        end
+        local massT = nxClamp((mass - CFG.bodyRollMassFullKg) / (CFG.bodyRollMassMinKg - CFG.bodyRollMassFullKg), 0, 1)
+        local massMult = 1.0 - massT * 0.6
+
+        target = steer * speedKmh * speedKmh * CFG.bodyRollGain * massMult
+        target = nxClamp(target, -CFG.bodyRollMax, CFG.bodyRollMax)
+    end
+
+    local step = math.min(1.0, CFG.bodyRollResponsePerS * dtSec)
+    st.current = st.current + (target - st.current) * step
+
+    local rx, ry, rz = getRotation(vehicle.rootNode)
+    rz = rz - (st.prevApplied or 0) + st.current
+    pcall(setRotation, vehicle.rootNode, rx, ry, rz)
+    st.prevApplied = st.current
+end
+
+local IMPLEMENT_SPEC_DRAG = {
+    plow              = 0.110,
+    cultivator        = 0.075,
+    subsoiler         = 0.130,
+    discHarrow        = 0.060,
+    powerHarrow       = 0.070,
+    spader            = 0.090,
+    stubbleCultivator = 0.065,
+    sowingMachine     = 0.045,
+    roller            = 0.030,
+    weeder            = 0.045,
+    mulcher           = 0.060,
+    mower             = 0.040,
+    baler             = 0.050,
+    cutter            = 0.055,
+    forageHarvester   = 0.080,
+}
+
+local function nxGetImplementDragDemand(vehicle, wetness, slopeFactor)
+    local demand = 0
+
+    local function addFromTool(tool)
+        if tool == nil then return end
+        local lowered = true
+        if tool.getIsLowered ~= nil then
+            local ok, v = pcall(tool.getIsLowered, tool, true)
+            if ok and v == false then lowered = false end
+        end
+        if not lowered then return end
+
+        for specName, baseDrag in pairs(IMPLEMENT_SPEC_DRAG) do
+            local spec = tool["spec_" .. specName]
+            if spec ~= nil then
+                local width = spec.workWidth or spec.workingWidth or spec.width or 3.0
+                if type(width) ~= "number" or width <= 0 then width = 3.0 end
+                demand = demand + baseDrag * width
+            end
+        end
+    end
+
+    addFromTool(vehicle)
+
+    if vehicle.getAttachedImplements ~= nil then
+        local ok, impls = pcall(vehicle.getAttachedImplements, vehicle)
+        if ok and type(impls) == "table" then
+            for _, e in ipairs(impls) do
+                if e ~= nil and e.object ~= nil then addFromTool(e.object) end
+            end
+        end
+    end
+
+    if demand > 0 then
+        demand = demand * nxLerp(1.0, CFG.implementLoadWetMult, nxClamp(wetness or 0, 0, 1))
+        demand = demand * nxLerp(1.0, CFG.implementLoadSlopeMult, nxClamp(slopeFactor or 0, 0, 1))
+    end
+
+    return demand
+end
+
+local function nxApplyImplementLoad(vehicle, dt)
+    if vehicle == nil or not vehicle.isServer then return end
+    if not NXRealisticWheelPhysics.enabled or not NXRealisticWheelPhysics.engineRpmModeEnabled then return end
+    if vehicle.getMotor == nil then return end
+    local motor = vehicle:getMotor()
+    if motor == nil then return end
+
+    local st = implementLoadStates[vehicle]
+    if st == nil then
+        st = { origTorqueScale = motor.torqueScale or 1.0, applied = 0, lastFrameMs = -1 }
+        implementLoadStates[vehicle] = st
+    end
+
+    local now = g_time or 0
+    if st.lastFrameMs == now then return end
+    st.lastFrameMs = now
+
+    local slopeFactor = 0
+    if vehicle.rootNode ~= nil and vehicle.rootNode ~= 0 then
+        local upX, upY, upZ = localDirectionToWorld(vehicle.rootNode, 0, 1, 0)
+        local tilt = 1.0 - nxClamp(upY or 1, 0, 1)
+        slopeFactor = tilt
+    end
+
+    local wetness = nxGetWetness()
+    local onField = vehicle.getIsOnField ~= nil and (pcall(vehicle.getIsOnField, vehicle))
+    local demand = onField and nxGetImplementDragDemand(vehicle, wetness, slopeFactor) or 0
+
+    -- Translate demand into a torqueScale reduction. Smooth-in / smooth-out.
+    local targetReduction = 0
+    if demand > CFG.implementLoadMinDemand then
+        local t = nxClamp((demand - CFG.implementLoadMinDemand) / 1.0, 0, 1)
+        targetReduction = t * CFG.implementLoadMax
+    end
+
+    local dtSec = (dt or 16) / 1000
+    local step = math.min(1.0, 3.0 * dtSec)
+    st.applied = st.applied + (targetReduction - st.applied) * step
+
+    local newScale = st.origTorqueScale * (1.0 - st.applied)
+    if newScale < 0.25 then newScale = 0.25 end
+    motor.torqueScale = newScale
+end
+
+local function nxGetFreezeThawMult(tempC)
+    if type(tempC) ~= "number" then return 1.0 end
+    if tempC <= CFG.freezeHardC then return CFG.freezeHardMult end
+    if tempC >= CFG.thawWindowLowC and tempC <= CFG.thawWindowHighC then
+        return CFG.thawWindowMult
+    end
+    if tempC < CFG.thawWindowLowC then
+        local t = nxClamp((tempC - CFG.freezeHardC) / (CFG.thawWindowLowC - CFG.freezeHardC), 0, 1)
+        return nxLerp(CFG.freezeHardMult, CFG.thawWindowMult, t)
+    end
+    local t = nxClamp((tempC - CFG.thawWindowHighC) / 5.0, 0, 1)
+    return nxLerp(CFG.thawWindowMult, 1.0, t)
+end
+
+local function nxGetVehicleFillRatio(vehicle)
+    if vehicle == nil or vehicle.getFillUnits == nil then return 0 end
+    local ok, units = pcall(vehicle.getFillUnits, vehicle)
+    if not ok or type(units) ~= "table" then return 0 end
+    local total, sum = 0, 0
+    for i, unit in ipairs(units) do
+        if vehicle.getFillUnitFillLevelPercentage ~= nil then
+            local ok2, p = pcall(vehicle.getFillUnitFillLevelPercentage, vehicle, i)
+            if ok2 and type(p) == "number" then
+                sum = sum + nxClamp(p, 0, 1)
+                total = total + 1
+            end
+        end
+    end
+    if total <= 0 then return 0 end
+    return sum / total
 end
 
 local function nxInstallHook()
     if WheelPhysics == nil or WheelPhysics.serverUpdate == nil then
         print("[FS25_FarmKit] RealisticWheelPhysics: WheelPhysics.serverUpdate not available")
         return false
+    end
+
+    local function nxResolveControlledVehicle()
+        if g_currentMission ~= nil then
+            if g_currentMission.controlledVehicle ~= nil then return g_currentMission.controlledVehicle end
+            if type(g_currentMission.getControlledVehicle) == "function" then
+                local ok, v = pcall(g_currentMission.getControlledVehicle, g_currentMission)
+                if ok and v ~= nil then return v end
+            end
+            if g_currentMission.hud ~= nil and g_currentMission.hud.controlledVehicle ~= nil then
+                return g_currentMission.hud.controlledVehicle
+            end
+        end
+        if g_localPlayer ~= nil then
+            if g_localPlayer.controlledVehicle ~= nil then return g_localPlayer.controlledVehicle end
+            if type(g_localPlayer.getControlledVehicle) == "function" then
+                local ok, v = pcall(g_localPlayer.getControlledVehicle, g_localPlayer)
+                if ok and v ~= nil then return v end
+            end
+        end
+        if NXFarmKitHUD ~= nil and NXFarmKitHUD.controlledVehicle ~= nil then
+            return NXFarmKitHUD.controlledVehicle
+        end
+        return nil
     end
 
     WheelPhysics.serverUpdate = Utils.appendedFunction(WheelPhysics.serverUpdate, function(self, dt, currentUpdateIndex, groundWetness)
@@ -1247,48 +1481,23 @@ local function nxInstallHook()
         elseif self.slip then slip = math.abs(self.slip) end
 
         pcall(nxOnWheelPhysics, self, dt)
-        if groundOn and slip > 0.20 then pcall(nxTryPaint, self, self.vehicle, slip) end
 
-        local cv = nil
-        if g_currentMission ~= nil and g_currentMission.controlledVehicle ~= nil then
-            cv = g_currentMission.controlledVehicle
-        elseif NXFarmKitHUD ~= nil and NXFarmKitHUD.controlledVehicle ~= nil then
-            cv = NXFarmKitHUD.controlledVehicle
-        elseif g_localPlayer ~= nil and g_localPlayer.controlledVehicle ~= nil then
-            cv = g_localPlayer.controlledVehicle
-        elseif g_currentMission ~= nil and g_currentMission.hud ~= nil and g_currentMission.hud.controlledVehicle ~= nil then
-            cv = g_currentMission.hud.controlledVehicle
+        local cv = nxResolveControlledVehicle()
+        if cv == nil then return end
+        if self.vehicle ~= cv then return end
+
+        local hasContact = true
+        if self.netInfo ~= nil and self.netInfo.hasGroundContact ~= nil then
+            hasContact = self.netInfo.hasGroundContact == true
+        elseif self.hasGroundContact ~= nil then
+            hasContact = self.hasGroundContact == true
         end
+        if not hasContact then return end
 
-        if cv ~= nil then
-            local vehicle = self.vehicle
-            local vehRoot = vehicle
-            if vehicle.getRootVehicle ~= nil then vehRoot = vehicle:getRootVehicle() or vehicle end
-            local cvRoot = cv
-            if cv.getRootVehicle ~= nil then cvRoot = cv:getRootVehicle() or cv end
-
-            if (vehRoot == cvRoot) or (vehicle == cv) then
-                if slip > currentMaxSlip then currentMaxSlip = slip end
-            end
-        end
+        if slip > currentMaxSlip then currentMaxSlip = slip end
     end)
 
     FSBaseMission.update = Utils.appendedFunction(FSBaseMission.update, function(self, dt)
-        local cv = nil
-        if g_currentMission ~= nil and g_currentMission.controlledVehicle ~= nil then
-            cv = g_currentMission.controlledVehicle
-        elseif NXFarmKitHUD ~= nil and NXFarmKitHUD.controlledVehicle ~= nil then
-            cv = NXFarmKitHUD.controlledVehicle
-        elseif g_localPlayer ~= nil and g_localPlayer.controlledVehicle ~= nil then
-            cv = g_localPlayer.controlledVehicle
-        end
-        if cv == nil then
-            NXRealisticWheelPhysics.displaySlip = 0
-            frameMaxSlip = 0
-            currentMaxSlip = 0
-            return
-        end
-
         if currentMaxSlip > 0 then
             frameMaxSlip = currentMaxSlip
             currentMaxSlip = 0

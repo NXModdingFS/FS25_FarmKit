@@ -7,13 +7,14 @@ NXDustMechanics.LOG_PREFIX         = "[FS25_FarmKit] DustMechanics: "
 
 NXDustMechanics.TYPE_MULT = {
     BALER = 1.5, CLEANING   = 1.4, COMBINE    = 1.5, CULTIVATOR = 2.0,
-    CUTTER = 1.2, MOWER     = 1.2, MULCHER    = 1.5, PLOW       = 2.0,
-    ROLLER = 1.5, SOWING    = 2.0, WEEDER     = 1.5, WINDROW    = 1.2,
-    WHEELS = 2.5
+    CUTTER = 1.2, FORAGE    = 1.5, MOWER      = 1.2, MULCHER    = 1.5,
+    PLOW   = 2.0, ROLLER    = 1.5, SOWING     = 2.0, WEEDER     = 1.5,
+    WINDROW = 1.2, WHEELS   = 2.5
 }
 
 NXDustMechanics.FADE_TAIL_MS_BY_TOOL = {
     COMBINE    = 8000,
+    FORAGE     = 6000,
     PLOW       = 7000,
     CULTIVATOR = 7000,
     MULCHER    = 5000,
@@ -28,8 +29,9 @@ NXDustMechanics.FADE_TAIL_MS_BY_TOOL = {
     WHEELS     = 1500
 }
 
-NXDustMechanics.dustEnabled    = true
-NXDustMechanics.dustMultiplier = 2.0
+NXDustMechanics.dustEnabled             = true
+NXDustMechanics.dustMultiplier          = 2.0
+NXDustMechanics.implementDustMultiplier = 1.0
 
 NXDustMechanics.hooksAttached  = false
 
@@ -73,12 +75,19 @@ function NXDustMechanics.getWeatherFactor()
     return 1.25
 end
 
+NXDustMechanics.IMPLEMENT_TOOLS = {
+    PLOW = true, CULTIVATOR = true, SOWING = true, ROLLER = true,
+    WEEDER = true, MOWER = true, CUTTER = true, MULCHER = true,
+    WINDROW = true, BALER = true,
+}
+
 function NXDustMechanics.getEffectiveMultiplier(toolName, isWheelSystem)
     if not NXDustMechanics.dustEnabled then return 1.0 end
     local typeMult  = NXDustMechanics.TYPE_MULT[toolName] or 1.0
     local wheelMult = isWheelSystem and 1.2 or 1.0
     local rain      = NXDustMechanics.getWeatherFactor()
-    return nxClamp(NXDustMechanics.dustMultiplier * typeMult * rain * wheelMult, 0.1, 20.0)
+    local implMult  = NXDustMechanics.IMPLEMENT_TOOLS[toolName] and (NXDustMechanics.implementDustMultiplier or 1.0) or 1.0
+    return nxClamp(NXDustMechanics.dustMultiplier * implMult * typeMult * rain * wheelMult, 0.1, 20.0)
 end
 
 function NXDustMechanics.getVehicleSpeed(vehicle)
@@ -114,7 +123,8 @@ end
 local NX_RECENT_SPECS = {
     "workArea", "plow", "cultivator", "subsoiler", "discHarrow", "powerHarrow",
     "spader", "stubbleCultivator", "roller", "sowingMachine", "weeder",
-    "mulcher", "windrower", "mower", "baler", "combine", "cutter"
+    "mulcher", "windrower", "mower", "baler", "combine", "cutter",
+    "forageHarvester"
 }
 
 function NXDustMechanics.hasAnyRecentActivity(vehicle)
@@ -384,6 +394,40 @@ NXDustMechanics.HANDLERS = {
                 and NXDustMechanics.isVehicleOnField(v)
         end,
         run = function(v, a) NXDustMechanics.walkWheels(v, a) end
+    },
+    {
+        tool = "FORAGE", class = "ForageHarvester", method = "onUpdateTick", mode = "overwrite",
+        check  = function(v) return v.spec_forageHarvester ~= nil end,
+        active = function(v)
+            if not NXDustMechanics.isVehicleTurnedOn(v) or not NXDustMechanics.isVehicleOnField(v) then
+                return false
+            end
+            return NXDustMechanics.hasAnyRecentActivity(v)
+                or NXDustMechanics.canVehicleWorkGround(v, false)
+        end,
+        run = function(v, a)
+            local s = v.spec_forageHarvester
+            if s == nil then return end
+            if type(s.effects) == "table" then
+                local first = s.effects[1]
+                if first ~= nil and first.effects ~= nil then
+                    NXDustMechanics.walkParentEffects(s.effects, "FORAGE", a)
+                else
+                    NXDustMechanics.walkEffects(s.effects, "FORAGE", a)
+                end
+            end
+            if type(s.fillEffects) == "table" then
+                NXDustMechanics.walkEffects(s.fillEffects, "FORAGE", a)
+            end
+            if type(s.dirtParticleSystems) == "table" then
+                for _, ps in ipairs(s.dirtParticleSystems) do
+                    NXDustMechanics.applyToParticleSystem(ps, "FORAGE", false, a)
+                end
+            end
+            if type(s.chopperEffects) == "table" then
+                NXDustMechanics.walkEffects(s.chopperEffects, "FORAGE", a)
+            end
+        end
     }
 }
 

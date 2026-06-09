@@ -26,13 +26,13 @@ A comprehensive field planning system and terrain-physics overhaul for Farming S
 
 - Ground Physics: Wheels flatten supported grass/meadow foliage on field edges, meadows and yards — without damaging foreign-field crops.
 
-- Dust Mechanics: Tune the implement-dust effects (plow, cultivator, combine, mower, baler, wheels and work particles) with a single global multiplier or turn them off entirely. 100% = engine default, 200% = mod default.
+- Dust Mechanics: Tune the implement-dust effects (plow, cultivator, combine, forage harvester, mower, baler, wheels and work particles) with a single global multiplier or turn them off entirely. 100% = engine default, 200% = mod default. Trailing dust ramps emission and lifespan down smoothly when work stops — no abrupt cut-off and no stuck-on emission from a stationary vehicle.
 
 - Realistic Plowing: When one side of a tractor drops into a furrow, the lower wheels get a narrower physical collider and stronger suspension damping to reduce arcade-style bouncing.
 
-- Realistic Wheel Physics: Slip-driven cultivator paint, terrain rut deformation, grip reduction on wet soil, wheel sink, anti-bounce suspension, viscous mud brake and slip-burst mud spray — full breakdown below.
+- Realistic Wheel Physics: Speed-and-scrub-aware terrain rut deformation, foliage-only crop damage in the wheel track, grip reduction on wet soil, wheel sink, anti-bounce suspension, throttle-gated viscous mud brake, engine bog when stuck, and slip-burst mud spray — full breakdown below.
 
-- FarmKit HUD: On-screen wheel-slip percentage near the speedometer, colour-coded green / yellow / red.
+- FarmKit HUD: Compact readout strip docked to the left of the time/date display in the top-right. Shows colour-coded wheel slip %, ground wetness %, current precipitation %, and a countdown to the next or current rain/snow/hail event with its type. A red [STUCK] badge appears when the controlled vehicle is bogged hard enough to need a tow.
 
 - In-Game Settings Toggles: Every physics feature can be enabled or disabled live in Options → General Settings.
 
@@ -57,25 +57,3 @@ Access settings via ESC → Settings → General Settings → NX FarmKit
 | FarmKit HUD | On / Off | On |
 
 Settings are persisted to `modSettings/FS25_FarmKit_Settings.xml` and synchronized across all players in multiplayer.
-
-<ins>**Realistic Wheel Physics:**</ins>
-
-**A slip-driven physics layer that turns wheelspin on farmland into actual consequences:**
-
-- Cultivator Paint: Spinning wheels on owned farmland paint cultivator texture under the contact patch.
-
-- Terrain Deformation: Slip deforms the heightmap into proportional ruts, capped per cell so vehicles don't sink through the world. Depth scales with slip and wetness.
-
-- Grip Reduction: Wet soil reduces lateral and longitudinal friction. The higher the wetness, the less grip.
-
-- Wheel Sink: Under high slip, wheels sink slightly into the surface. Integrates with the base-game MudSystem field-sink updater when present.
-
-- Anti-Bounce Suspension: When the wheel detects sustained deformation, suspension damping increases and displacement collision disables to stop arcade-style bouncing.
-
-- Viscous Brake: Slip-proportional drag while spinning in mud — vehicles bog down naturally instead of revving free.
-
-- Slip-Burst Mud Spray: Mud emission rate multiplies (up to 4×) during spin-outs, layered on top of the base Mud Physics.
-
-- Smart Gates: Diff/4WD reduce damage, tire-type detection (street / forest / wide / twin / track) modulates grip and damage, heavy or wet vehicles lower the slip threshold, and the system reads VariableTirePressure when that mod is loaded.
-
-The wheel slip percentage is displayed live by the FarmKit HUD near the speedometer. This system runs server-side on every driven wheel and is gated by the "Realistic Wheel Physics" toggle. Changes are synchronized across all players in multiplayer.

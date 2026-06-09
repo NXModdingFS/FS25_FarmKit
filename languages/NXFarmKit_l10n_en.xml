@@ -42,7 +42,7 @@
     <text name="nx_setting_on"                    text="On" />
     <text name="nx_setting_off"                   text="Off" />
 
-    <text name="nx_menu_section_title"            text="NX FarmKit" />
+    <text name="nx_menu_section_title"            text="FarmKit Settings" />
 
     <text name="nx_menu_densityEnabled"            text="Ground Physics" />
     <text name="nx_menu_densityEnabled_tooltip"    text="What wheels do to the ground: dry/wet mud spray off every driven wheel on soil contact, terrain ruts under slip, wheel sink in soft soil, and cultivator/grubber paint on owned farmland. Skips planters, seeders, plows and other tool categories. Does not damage planted field crops or surrounding foliage." />
@@ -55,8 +55,11 @@
     <text name="nx_menu_dustEnabled"              text="Dust Mechanics" />
     <text name="nx_menu_dustEnabled_tooltip"      text="Master switch for the dust scaling system. When off, vanilla particle behaviour is restored on every implement." />
 
-    <text name="nx_menu_dustMultiplier"           text="Dust Multiplier" />
-    <text name="nx_menu_dustMultiplier_tooltip"   text="Global intensity for all implement dust effects (plow, cultivator, combine, mower, wheels, etc.). 100% is the engine default, 200% is the mod default." />
+    <text name="nx_menu_dustMultiplier"                   text="Dust Multiplier" />
+    <text name="nx_menu_dustMultiplier_tooltip"           text="Global intensity for all dust effects (plow, cultivator, combine, mower, wheels, etc.). 100% is the engine default, 200% is the mod default." />
+
+    <text name="nx_menu_implementDustMultiplier"         text="Implement Dust Multiplier" />
+    <text name="nx_menu_implementDustMultiplier_tooltip" text="Extra multiplier applied on top of the global dust multiplier, but only to towed/attached implement dust (plow, cultivator, sowing machine, roller, weeder, mower, mulcher, windrower, baler, and the combine/forager header cutter). Self-propelled vehicle dust (combine chopper plume, grain cleaning, forage harvester) and wheel kick-up are unaffected — those track the global slider alone. 100% means no extra adjustment; set above to amplify implements only, below to dial them back." />
 
     <text name="nx_menu_plowingEnabled"           text="Realistic Plowing" />
     <text name="nx_menu_plowingEnabled_tooltip"   text="Stabilises wheel physics when one side of a tractor drops into a furrow — narrower wheel collider and stronger suspension damping on the lower side to reduce arcade-style bouncing." />
@@ -66,6 +69,9 @@
 
     <text name="nx_menu_realisticEngineEnabled"         text="Realistic Engine Mode" />
     <text name="nx_menu_realisticEngineEnabled_tooltip" text="Couples engine state to physics. When the wheels are sinking and slipping on field, the engine target RPM climbs proportional to how stuck the vehicle is — simulating the drivetrain spinning free with no traction, the classic stuck-vehicle howl. Only fires while the player is on the throttle. Compatible with RPM mods — last write wins per tick." />
+
+    <text name="nx_menu_loadSpillEnabled"         text="Realistic Hauling" />
+    <text name="nx_menu_loadSpillEnabled_tooltip" text="Trailers actually lose their load when tipped past a critical angle. Spilling starts at 15°, ramps to full at 120°; a closed tarp buys an extra 15° of headroom and breaches outright past 60°. About 70% of the spilled volume drops on the ground as a pickupable fill patch (loader-recoverable); the other 30% is lost to scatter. Speed-aware discharge while tipping intentionally — fast tipping flings material further, stationary tipping piles it under the chute. Solid fills only (grain, fertilizer, lime, manure, silage); liquids and cars/trucks are excluded." />
 
     <text name="nx_menu_hudEnabled"                  text="FarmKit HUD" />
     <text name="nx_menu_hudEnabled_tooltip"          text="On-screen FarmKit HUD overlay — currently displays the current wheel slip percentage near the speedometer (green / yellow / red)." />
