@@ -2,6 +2,10 @@
 > Edits of this mod file are not permitted.
 > You may submit a bug report via the Github Repo, however, the prefered method is through our discord this allows us to easily ask questions sould I need more evidence https://discord.gg/aDTTXAhE2m
 
+<ins>**Credits**</ins> 
+
+- Tubez47 Realistic Load Spill
+
 <ins>**NX FarmKit**</ins> (ModHub v1.0.0.0)
 
 A comprehensive field planning system and terrain-physics overhaul for Farming Simulator 25. View every field's material requirements at a glance, then drive over them knowing your wheels actually slip in mud, sink under load, deform the terrain into proportional ruts, and bog you down when you get stuck.
