@@ -4,6 +4,10 @@
 
 <ins>**NX FarmKit**</ins> (ModHub v1.0.0.0)
 
+<ins>**Credits**</ins> 
+
+- Tubez47 Realistic Load Spill
+
 A comprehensive field planning system and terrain-physics overhaul for Farming Simulator 25. View every field's material requirements at a glance, then drive over them knowing your wheels actually slip in mud, sink under load, deform the terrain into proportional ruts, and bog you down when you get stuck.
 
 <ins>**Key Features**</ins>
