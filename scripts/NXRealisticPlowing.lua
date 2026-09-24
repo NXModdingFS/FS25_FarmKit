@@ -14,7 +14,18 @@ NXRealisticPlowing.TUNING = {
     fieldOnly       = true,
     dampAllWheels   = false,
     disableCollision = false,
-    preferPlowSide  = true
+    preferPlowSide  = true,
+
+    -- Per-wheel furrow detection: a wheel whose contact point sits below the base
+    -- terrain height is riding in a furrow (displacement dip), independent of side.
+    furrowCheck        = true,
+    furrowSampleMs     = 100,
+    furrowEnterDepth   = 0.10,   -- metres below terrain to count as "in furrow"
+    furrowExitDepth    = 0.06,   -- must climb back above this to release (hysteresis)
+    furrowWidthScale   = 0.08,   -- collider shrinks to a thin disc so furrow walls can't grab it
+    furrowMinWidth     = 0.04,
+    furrowReactSpeed   = 6.0,
+    furrowReleaseSpeed = 2.5
 }
 
 NXRealisticPlowing.enabled = true
@@ -48,6 +59,7 @@ function NXRealisticPlowing:onLoad(savegame)
     self[NXRealisticPlowing.SPEC_FIELD] = {
         wheels    = {},
         sideBlend = { left = 0, right = 0 },
+        furrowTimer = 0,
         tuning    = t
     }
 end
@@ -73,6 +85,8 @@ function NXRealisticPlowing:onPostLoad(savegame)
                 baseOffset    = physics.wheelShapeWidthOffset or 0,
                 baseCollision = physics.displacementCollisionEnabled ~= false,
                 currentWidth  = baseWidth,
+                inFurrow      = false,
+                furrowBlend   = 0,
                 lastWidth     = nil,
                 lastDamping   = nil,
                 lastSpring    = nil,
@@ -87,7 +101,10 @@ function NXRealisticPlowing:onUpdate(dt, isActiveForInput, isActiveForInputIgnor
     if spec == nil or #spec.wheels == 0 then return end
 
     if not NXRealisticPlowing.enabled then
-        for _, w in ipairs(spec.wheels) do NXRealisticPlowing.restoreWheel(w) end
+        for _, w in ipairs(spec.wheels) do
+            NXRealisticPlowing.restoreWheel(w)
+            w.inFurrow, w.furrowBlend = false, 0
+        end
         spec.sideBlend.left, spec.sideBlend.right = 0, 0
         return
     end
@@ -111,6 +128,21 @@ function NXRealisticPlowing:onUpdate(dt, isActiveForInput, isActiveForInputIgnor
     spec.sideBlend.left  = nxMoveTowards(spec.sideBlend.left,  leftTarget,  dtSec * lspeed)
     spec.sideBlend.right = nxMoveTowards(spec.sideBlend.right, rightTarget, dtSec * rspeed)
 
+    if t.furrowCheck then
+        spec.furrowTimer = spec.furrowTimer + dt
+        if spec.furrowTimer >= t.furrowSampleMs then
+            spec.furrowTimer = 0
+            for _, w in ipairs(spec.wheels) do
+                NXRealisticPlowing.sampleFurrow(w, t)
+            end
+        end
+        for _, w in ipairs(spec.wheels) do
+            local target = w.inFurrow and 1 or 0
+            local rate = (target > w.furrowBlend) and t.furrowReactSpeed or t.furrowReleaseSpeed
+            w.furrowBlend = nxMoveTowards(w.furrowBlend, target, dtSec * rate)
+        end
+    end
+
     for _, w in ipairs(spec.wheels) do
         NXRealisticPlowing.updateWheel(spec, w, dt)
     end
@@ -131,12 +163,19 @@ function NXRealisticPlowing.updateWheel(spec, w, dt)
     local sideBlend = spec.sideBlend[sideKey] or 0
     local allBlend  = math.max(spec.sideBlend.left or 0, spec.sideBlend.right or 0)
 
+    local furrowBlend = w.furrowBlend or 0
+
     local targetWidth = w.baseWidth
     if sideBlend > 0 then
         local narrow = math.max(t.minPhysWidth, w.baseWidth * t.widthScale)
         targetWidth = w.baseWidth + (narrow - w.baseWidth) * sideBlend
     end
-    local alpha = nxClamp((dt / 1000) * t.reactionSpeed, 0, 1)
+    if furrowBlend > 0 then
+        local thin = math.max(t.furrowMinWidth, w.baseWidth * t.furrowWidthScale)
+        targetWidth = targetWidth + (math.min(thin, targetWidth) - targetWidth) * furrowBlend
+    end
+    local react = (furrowBlend > 0) and math.max(t.reactionSpeed, t.furrowReactSpeed) or t.reactionSpeed
+    local alpha = nxClamp((dt / 1000) * react, 0, 1)
     w.currentWidth = w.currentWidth + (targetWidth - w.currentWidth) * alpha
 
     if physics.setWheelShapeWidth ~= nil
@@ -145,7 +184,7 @@ function NXRealisticPlowing.updateWheel(spec, w, dt)
         w.lastWidth = w.currentWidth
     end
 
-    local dampBlend = t.dampAllWheels and allBlend or sideBlend
+    local dampBlend = math.max(t.dampAllWheels and allBlend or sideBlend, furrowBlend)
     local damping = 1 + (t.dampingMult - 1) * dampBlend
     local spring  = 1 + (t.springMult  - 1) * dampBlend
     if physics.setSuspensionMultipliers ~= nil
@@ -189,6 +228,46 @@ function NXRealisticPlowing.restoreWheel(w)
         and w.lastCollision ~= w.baseCollision then
         physics:setDisplacementCollisionEnabled(w.baseCollision)
         w.lastCollision = w.baseCollision
+    end
+end
+
+-- How far (m) the wheel's contact point sits below the base terrain height at the
+-- same XZ. Plough furrows are displacement dips, so the heightmap stays at the
+-- un-ploughed level while the tyre rides lower. Negative/zero = on top of the ground.
+function NXRealisticPlowing.getFurrowDepth(w)
+    local wheel, physics = w.wheel, w.physics
+    if wheel == nil or physics == nil or wheel.node == nil then return nil end
+    if physics.hasGroundContact == false then return nil end
+
+    local terrain = g_currentMission ~= nil and g_currentMission.terrainRootNode or nil
+    if terrain == nil or getTerrainHeightAtWorldPos == nil then return nil end
+
+    local ni = physics.netInfo
+    if ni == nil or ni.x == nil or ni.y == nil or ni.z == nil then return nil end
+
+    local x, y, z = localToWorld(wheel.node, ni.x, ni.y - (physics.radius or 0.5), ni.z)
+    local terrainY = getTerrainHeightAtWorldPos(terrain, x, 0, z)
+    if terrainY == nil then return nil end
+
+    return terrainY - y
+end
+
+function NXRealisticPlowing.sampleFurrow(w, t)
+    if t.fieldOnly and not NXRealisticPlowing.wheelOnField(w) then
+        w.inFurrow = false
+        return
+    end
+
+    local depth = NXRealisticPlowing.getFurrowDepth(w)
+    if depth == nil then
+        -- airborne / no data: keep the current state rather than snapping the collider wide mid-bounce
+        return
+    end
+
+    if w.inFurrow then
+        if depth < t.furrowExitDepth then w.inFurrow = false end
+    elseif depth > t.furrowEnterDepth then
+        w.inFurrow = true
     end
 end
 

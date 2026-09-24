@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>NX Modding</author>
-    <version>1.0.0.2</version>
+    <version>1.0.0.3</version>
     <title>
         <en>FarmKit</en>
         <de>HofKit</de>
@@ -19,17 +19,31 @@ Features:
 • Organic Nitrogen Mode: Switch organic fertilizer calculations between soil target and plant target (PF only)
 • Multiplayer-Aware: Calculations run on the server and stream cached results to clients
 • Wheel Mud Sprayer: Dry/wet mud particles kick up off every driven wheel on soil contact, off-field included
-• Outside-Field Destruction: Wheels also flatten supported grass/meadow foliage on field edges, meadows, yards — without damaging foreign-field crops
+• Outside-Field Destruction: Wheels flatten grass and meadow off-field on your own land (field edges, meadows, yards) — the faster you drive, the more goes down; creeping leaves it standing
 • In-Game Settings Toggles: All physics features can be enabled or disabled live in Options → General settings
 • Dust Mechanics: Tune the implement-dust effects (plow, cultivator, combine, mower, wheels, etc.) with a single global multiplier or turn them off entirely
-• Realistic Plowing: When one side of a tractor drops into a furrow, the wheels on the lower side get a narrower physical collider and stronger suspension damping to reduce arcade-style bouncing
+• Realistic Plowing: When one side of a tractor drops into a furrow, the wheels on the lower side get a narrower physical collider and stronger suspension damping to reduce arcade-style bouncing. Any single wheel riding down in a furrow also has its collider thinned right down so the furrow walls can't catch it
 • Realistic Wheel Physics: Wheel slip on farmland paints cultivator texture, deforms the terrain into proportional ruts, reduces grip on wet soil, sinks the wheels slightly, and damps the suspension. Smart gates: diff/4WD reduce damage, wide/track tires reduce damage, heavy/wet vehicles lower the threshold
+• Combine Straw Refeed: A threshing combine with its header lowered over an existing straw windrow picks it back up, runs it through the machine and drops it out of the rear swath again (or chops and spreads it with the chopper on)
+• Speed-Based Crop Damage: Wheels no longer flatten crops all-or-nothing. Creeping through a crop leaves it standing; the faster you go the more gets flattened. Wide tyres, sharp turns, wet ground and heavy machines do more damage; row-crop (care) tyres never flatten crops
+• Road Water Spray: Tyres throw water spray on wet asphalt, concrete and bridges. It builds with speed, road wetness and rainfall, and wider tyres throw more
+• Realistic Engine Sound Distance: Engines carry much further (bigger engines further still) and fade the way real sound does, sound muffled far away or behind hills and buildings, and shift pitch as they pass you
+• Neighbours: Up to 10 neighbour farmers take open field contracts and work them with their own machines and helpers, so the map feels lived in (off by default)
 • FarmKit HUD: On-screen slip% read-out near the speedometer, colour-coded green/yellow/red
 • Multi-Language Support: Available in 3 languages
 
 Press Right Shift + F to open FarmKit.
 
 Version History:
+• 1.0.0.3
+  - New: Neighbours setting (Off, 1–10; hard limit 10) — neighbour farmers take open field contracts, bring the lease machines to the field, hitch up and put a helper to work. Their seed, fertiliser, herbicide and fuel are free, harvesters never stop full, and when the job is done the contract closes and the machines leave. They always leave at least 3 open contracts for you, never start a job right where you're looking, never use your last free helpers and don't count against your helper limit. Their pay goes to their own hidden farm, not yours. Off by default; each active neighbour costs some performance
+  - New: Realistic Engine Sound Distance toggle — engine, gearbox and retarder sounds now carry 180–380 m depending on engine power, instead of cutting off close by. Volume falls away like real sound spreading out and fades smoothly at the edge of the range; distant engines lose their high end, engines behind hills, buildings or other solid objects are muffled further, and passing vehicles shift pitch (Doppler, based on real time so it stays correct with time acceleration). Turning it off restores the original sound ranges
+  - New: Road Water Spray toggle — every wheeled vehicle and trailer throws water spray off its tyres on wet hard surfaces: asphalt, concrete, bridges and other object roads. Spray starts around 12 km/h and builds with speed, how wet the road is and whether rain is falling right now; wider tyres throw more. Sprays the right way when reversing, stays off on soil (the mud sprayer covers that) and on snow. Visual only, so it adds no multiplayer traffic
+  - New: Speed-Based Crop Damage toggle — replaces the game's all-or-nothing wheel crop destruction. Below 5 km/h crops are never flattened; above that the chance climbs smoothly, becoming near-certain around 40 km/h. Tyre width, steering, ground wetness and vehicle weight push it up; row-crop (care) tyres still never flatten crops, as in the base game. Each patch of ground has a fixed toughness, so damage comes out patchy and natural, and crawling over the same spot repeatedly won't slowly wipe it out. Only applies when the game's own Crop Destruction setting is on
+  - New: Combine Straw Refeed toggle — driving a threshing combine with the header lowered over a straw windrow now picks that straw back up. It takes a couple of seconds to travel through the machine, then comes out of the rear swath outlet as a fresh windrow. With the chopper on, the straw is chopped and spread instead. Respects field access, so it won't lift straw off land you can't work
+  - New: Per-wheel furrow detection for Realistic Plowing — each wheel is checked on its own for riding below the surrounding ground. A wheel in the furrow gets a thin collider and firmer damping so it tracks the furrow instead of climbing and bouncing off the walls. Blends in and out smoothly, with separate enter/exit depths so it doesn't flicker on the furrow edge
+  - Fixed: Ground Physics grass flattening never actually ran. Wheels now flatten grass and meadow off-field on your own land (yards, verges, meadows), following the same speed curve as Speed-Based Crop Damage — creep through it and it stays standing. Flattened grass regrows. Grassland fields are left alone
+  - Removed: Tow Chain — the three shop towing chains, their keybinds and the tow chain settings menu have been removed. Chains owned in existing saves will be dropped on load
 • 1.0.0.2
   - New: Realistic Hauling toggle — trailers actually lose their load when tipped past 15° (sharp turns, terrain rolls, rollovers). Closed tarp adds 15° of headroom and breaches outright past 60°. ~70% of the spilled volume drops on the ground as a pickupable fill patch; ~30% is lost to scatter. Speed-aware discharge while tipping intentionally: stationary tip piles material under the chute, fast tip flings it further. Solid fills only (grain, fertilizer, lime, manure, silage, etc.).
   - New: Implement Dust Multiplier — second slider in settings that scales only towed/attached implement dust (plough, cultivator, sowing, roller, weeder, mower, mulcher, windrower, baler, combine/forager header). Stacks on top of the global multiplier. Wheel kick-up, combine chopper, grain cleaning and forage harvester bodies still follow the global slider alone.
@@ -42,15 +56,12 @@ Version History:
   - Improved: Freeze/thaw banded multiplier — replaces the binary "frozen = no deformation" cutoff. Deep-frozen ground (×0.3) is hard to mark; the thaw band just above 0 °C (×1.8) turns to porridge
   - Improved: Fill-ratio sink boost — fully loaded trailers sink up to 60% deeper into soft ground than empty ones
   - Improved: HUD relocated to the top-right alongside the time/date strip. Wheel slip %, ground wetness % with a wet-droplet icon, current precipitation % with a rain-cloud icon, and a countdown to the next or current rain/snow/hail event with its type. A red [STUCK] badge appears when the controlled vehicle is bogged hard enough to need a tow
-  - Improved: Towing chain keybind page cleaned up — unbound hook-movement, towed-vehicle remote and settings actions no longer clutter Options → Controls (basic attach on X stays visible and rebindable)
   - Fixed: Implement dust no longer cuts off abruptly when work stops — both emission rate and particle lifespan ramp down smoothly over the per-tool fade window
   - Fixed: Stationary vehicles no longer keep emitting "base-game" dust after stopping — the forced emission state is now released cleanly at the end of the fade window
   - Fixed: Downhill coast no longer locks the wheels and stops the tractor dead — viscous mud drag only fires under positive throttle input and undoes its previous tick's contribution so it can never compound across frames
   - Fixed: Wheel slip readout no longer pins at 95% when AI workers or trailer wheels are nearby — tracker now strictly limits to the controlled vehicle's own driven wheels with ground contact
   - Removed: Crop-stripping under spinning wheels — driving across your own crops no longer reveals bare cultivated soil in the wheel tracks (terrain ruts and foliage-only crop damage handle the realism now)
 • 1.0.0.1
-  - New: Tow Chain — three purchasable towing chains (1.5 m, 2.5 m, 3.5 m) in the shop under Misc, for pulling stuck vehicles out
-    Usage: connect the RED end of the chain to the vehicle you want to tow, then reverse your tow tractor up to the other end of the chain and attach it. Press the attach key again to disconnect.
   - New: Realistic Engine Mode toggle in settings — engine revs climb as the wheels sink and spin out on field
   - New: Liquid Lime support — the field dialog shows liquid lime when the Liquid Lime mod is installed
   - Improved: implement dust now fades away gradually instead of cutting off the instant work stops
@@ -85,17 +96,31 @@ Funktionen:
 • Organischer Stickstoff-Modus: Schaltet die Berechnung organischer Dünger zwischen Boden- und Pflanzen-Zielwert um (nur PF)
 • Multiplayer-fähig: Berechnungen laufen auf dem Server und werden zwischengespeichert an Clients gestreamt
 • Rad-Schlammspritze: Trockene/nasse Schlammpartikel sprühen bei Bodenkontakt von jedem Antriebsrad, auch außerhalb von Feldern
-• Zerstörung außerhalb der Felder: Räder zerstören auch Gras-/Wiesenflächen an Feldrändern, Wiesen und Höfen — ohne fremde Felder zu beschädigen
+• Zerstörung außerhalb der Felder: Räder walzen Gras und Wiese außerhalb von Feldern auf eigenem Land platt (Feldränder, Wiesen, Höfe) — je schneller, desto mehr; bei Kriechfahrt bleibt es stehen
 • In-Game-Einstellungen: Alle Physik-Funktionen können in Optionen → Allgemeine Einstellungen live an- und ausgeschaltet werden
 • Staubmechanik: Steuere die Staubeffekte von Geräten (Pflug, Grubber, Mähdrescher, Mäher, Räder usw.) per globalem Multiplikator oder schalte sie komplett ab
-• Realistisches Pflügen: Sinkt eine Traktorseite in eine Furche, erhalten die unteren Räder einen schmaleren Kollider und stärkere Dämpfung gegen unrealistisches Aufschaukeln
+• Realistisches Pflügen: Sinkt eine Traktorseite in eine Furche, erhalten die unteren Räder einen schmaleren Kollider und stärkere Dämpfung gegen unrealistisches Aufschaukeln. Läuft ein einzelnes Rad in der Furche, wird sein Kollider zusätzlich stark verschmälert, damit die Furchenwände es nicht greifen
 • Realistische Radphysik: Radschlupf auf Feldboden malt Grubber-Spuren, verformt das Terrain proportional, reduziert Grip auf nassem Boden, lässt Räder leicht einsinken und dämpft die Federung. Intelligente Gates: Diff/Allrad reduziert Schaden, Breit-/Raupenreifen reduziert Schaden, schwere/nasse Bedingungen senken den Schwellwert
+• Mähdrescher-Strohaufnahme: Ein dreschender Mähdrescher nimmt mit abgesenktem Schneidwerk vorhandene Strohschwaden wieder auf, führt sie durch die Maschine und legt sie hinten erneut als Schwad ab (oder häckselt und verteilt sie bei eingeschaltetem Häcksler)
+• Geschwindigkeitsabhängiger Pflanzenschaden: Räder walzen Pflanzen nicht mehr nach dem Alles-oder-nichts-Prinzip platt. Bei Kriechfahrt bleibt der Bestand stehen; je schneller, desto mehr wird niedergefahren. Breite Reifen, enge Kurven, nasser Boden und schwere Maschinen richten mehr Schaden an; Pflegereifen walzen nie etwas platt
+• Sprühwasser auf der Straße: Reifen werfen auf nassem Asphalt, Beton und Brücken Sprühwasser auf. Es nimmt mit Geschwindigkeit, Straßennässe und Regen zu, breitere Reifen werfen mehr auf
+• Realistische Motorgeräusch-Reichweite: Motoren sind viel weiter zu hören (große Motoren noch weiter) und klingen mit der Entfernung wie echter Schall leiser, weit weg oder hinter Hügeln und Gebäuden gedämpft, und ändern beim Vorbeifahren die Tonhöhe
+• Nachbarn: Bis zu 10 Nachbarlandwirte übernehmen offene Feldaufträge und bearbeiten sie mit eigenen Maschinen und Helfern, damit die Karte belebt wirkt (standardmäßig aus)
 • FarmKit HUD: Schlupf-Anzeige in Prozent neben dem Tacho, farbcodiert grün/gelb/rot
 • Mehrsprachige Unterstützung: In 3 Sprachen verfügbar
 
 Drücken Sie Rechte Umschalttaste + F, um die FarmKit zu öffnen.
 
 Versionsverlauf:
+• 1.0.0.3
+  - Neu: Einstellung "Nachbarn" (Aus, 1–10; feste Obergrenze 10) — Nachbarlandwirte übernehmen offene Feldaufträge, bringen die Leihmaschinen aufs Feld, hängen an und setzen einen Helfer ein. Saatgut, Dünger, Herbizid und Kraftstoff sind für sie kostenlos, Erntemaschinen bleiben nie voll stehen, und nach getaner Arbeit wird der Auftrag abgeschlossen und die Maschinen verschwinden. Sie lassen dir immer mindestens 3 offene Aufträge, starten nie direkt in deinem Blickfeld, nehmen dir nie die letzten freien Helfer und zählen nicht gegen dein Helferlimit. Ihr Lohn geht an ihren eigenen versteckten Hof, nicht an deinen. Standardmäßig aus; jeder aktive Nachbar kostet etwas Leistung
+  - Neu: Schalter "Realistische Motorgeräusch-Reichweite" — Motor-, Getriebe- und Retardergeräusche tragen je nach Motorleistung 180–380 m weit, statt schon nah abzubrechen. Die Lautstärke fällt wie bei echter Schallausbreitung ab und blendet am Rand der Reichweite sanft aus; entfernte Motoren verlieren die Höhen, Motoren hinter Hügeln, Gebäuden oder anderen festen Objekten werden zusätzlich gedämpft, und vorbeifahrende Fahrzeuge ändern die Tonhöhe (Doppler, auf Echtzeit basierend, daher auch bei Zeitraffer korrekt). Ausschalten stellt die ursprünglichen Reichweiten wieder her
+  - Neu: Schalter "Sprühwasser auf der Straße" — alle Radfahrzeuge und Anhänger werfen auf nassen festen Oberflächen Sprühwasser von den Reifen auf: Asphalt, Beton, Brücken und andere Objekt-Straßen. Ab etwa 12 km/h, stärker mit Geschwindigkeit, Straßennässe und aktuellem Regen; breitere Reifen werfen mehr auf. Beim Rückwärtsfahren in die richtige Richtung, aus auf Erdboden (dort greift die Schlammspritze) und auf Schnee. Rein optisch, daher kein zusätzlicher Multiplayer-Datenverkehr
+  - Neu: Schalter "Geschwindigkeitsabhängiger Pflanzenschaden" — ersetzt die Alles-oder-nichts-Pflanzenzerstörung durch Räder. Unter 5 km/h werden Pflanzen nie niedergefahren; darüber steigt die Wahrscheinlichkeit sanft an und ist um 40 km/h nahezu sicher. Reifenbreite, Lenkeinschlag, Bodenfeuchte und Fahrzeuggewicht erhöhen sie; Pflegereifen walzen wie im Grundspiel nie etwas platt. Jede Bodenstelle hat eine feste Widerstandsfähigkeit, sodass der Schaden fleckig und natürlich ausfällt und wiederholtes Kriechen über dieselbe Stelle den Bestand nicht nach und nach vernichtet. Gilt nur, wenn die Spieleinstellung Pflanzenzerstörung eingeschaltet ist
+  - Neu: Schalter "Mähdrescher-Strohaufnahme" — ein dreschender Mähdrescher nimmt mit abgesenktem Schneidwerk Strohschwaden wieder auf. Das Stroh braucht einige Sekunden durch die Maschine und wird hinten als neuer Schwad abgelegt. Bei eingeschaltetem Häcksler wird es stattdessen gehäckselt und verteilt. Berücksichtigt Feldzugriff, nimmt also kein Stroh von Flächen auf, die du nicht bearbeiten darfst
+  - Neu: Furchenerkennung pro Rad für Realistisches Pflügen — jedes Rad wird einzeln geprüft, ob es unterhalb des umgebenden Bodens läuft. Ein Rad in der Furche erhält einen dünnen Kollider und straffere Dämpfung, damit es der Furche folgt, statt an den Wänden hochzuklettern und zu springen. Sanftes Ein- und Ausblenden mit getrennten Ein-/Austrittstiefen, damit es an der Furchenkante nicht flackert
+  - Behoben: Das Grasplattwalzen der Bodenphysik wurde nie tatsächlich ausgeführt. Räder walzen jetzt Gras und Wiese außerhalb von Feldern auf eigenem Land (Hofflächen, Ränder, Wiesen) platt, nach derselben Geschwindigkeitskurve wie der geschwindigkeitsabhängige Pflanzenschaden — bei Kriechfahrt bleibt es stehen. Plattgewalztes Gras wächst nach. Grünlandfelder bleiben unberührt
+  - Entfernt: Abschleppkette — die drei Abschleppketten im Shop, ihre Tastenbelegungen und das Abschleppketten-Einstellungsmenü wurden entfernt. In bestehenden Spielständen vorhandene Ketten werden beim Laden entfernt
 • 1.0.0.2
   - Neu: Schalter "Realistischer Transport" — Anhänger verlieren tatsächlich ihre Ladung, wenn sie über 15° kippen (enge Kurven, Geländerollen, Überschläge). Geschlossene Plane verschafft 15° zusätzlichen Spielraum und reißt jenseits von 60° auf. ~70 % der verschütteten Menge fallen als aufnehmbarer Materialhaufen auf den Boden; ~30 % gehen durch Streuverlust verloren. Geschwindigkeitsabhängige Entladung beim absichtlichen Kippen: im Stand entsteht ein enger Haufen unter der Schütte, schnelles Kippen schleudert das Material weiter. Nur Schüttgut (Getreide, Dünger, Kalk, Mist, Silage usw.).
   - Neu: Geräte-Staub-Multiplikator — zweiter Regler in den Einstellungen, der ausschließlich gezogene/angebaute Geräte-Staubeffekte skaliert (Pflug, Grubber, Sämaschine, Walze, Striegel, Mähwerk, Mulcher, Schwader, Presse, Schneidwerk an Mähdrescher/Feldhäcksler). Wird oben auf den globalen Multiplikator angewendet. Rad-Staub, Mähdrescher-Häcksler, Reinigung und Feldhäcksler-Korpus folgen weiterhin nur dem globalen Regler.
@@ -108,15 +133,12 @@ Versionsverlauf:
   - Verbessert: Frost-/Tau-Bandkurve — tief gefrorener Boden (×0,3) ist schwer zu markieren; das Tau-Band knapp über 0 °C (×1,8) wird zu Brei
   - Verbessert: Füllstand-Einsink-Boost — voll beladene Anhänger sinken bis zu 60 % tiefer in weichen Boden als leere
   - Verbessert: HUD oben rechts neben die Zeit-/Datum-Anzeige verlegt — Radschlupf %, Bodenfeuchte % mit Tropfen-Symbol, Niederschlag % mit Regenwolken-Symbol, Countdown zum nächsten oder aktuellen Regen/Schnee/Hagel mit Art-Angabe, rotes [STUCK]-Symbol wenn das gesteuerte Fahrzeug abgeschleppt werden muss
-  - Verbessert: Abschleppketten-Tastenbelegungs-Seite aufgeräumt — ungebundene Haken-Bewegungs-, Abgeschlepptes-Fahrzeug-Fernbedienungs- und Einstellungsaktionen verstopfen die Optionen → Steuerung-Seite nicht mehr (Anhängen mit X bleibt sichtbar und neu belegbar)
   - Behoben: Geräte-Staub bricht beim Arbeitsende nicht mehr abrupt ab — Emission und Partikellebensdauer laufen über das werkzeugspezifische Auslaufintervall sanft aus
   - Behoben: Stehende Fahrzeuge geben nach dem Stopp keinen "Spielstandard"-Staub mehr ab
   - Behoben: Bergab-Rollen sperrt die Räder nicht mehr und bringt den Traktor nicht zum sofortigen Stillstand — viskoser Schlamm-Widerstand wirkt nur bei positivem Gas und hebt sich jeden Frame selbst auf
   - Behoben: Schlupf-Anzeige bleibt nicht mehr bei 95 % hängen, wenn KI-Arbeiter oder Anhängerräder in der Nähe sind — der Tracker beschränkt sich jetzt strikt auf die Antriebsräder des gesteuerten Fahrzeugs mit Bodenkontakt
   - Entfernt: Pflanzen-Abschälen unter durchdrehenden Rädern — beim Überfahren eigener Pflanzen wird in den Spurrillen kein nackter, bearbeiteter Boden mehr freigelegt
 • 1.0.0.1
-  - Neu: Abschleppkette — drei kaufbare Abschleppketten (1,5 m, 2,5 m, 3,5 m) im Shop unter Sonstiges, zum Bergen festgefahrener Fahrzeuge
-    Verwendung: Das ROTE Ende der Kette mit dem abzuschleppenden Fahrzeug verbinden, dann mit dem Zugfahrzeug rückwärts an das andere Kettenende fahren und anhängen. Zum Lösen die Anhängen-Taste erneut drücken.
   - Neu: Einstellung "Realistischer Motormodus" — die Motordrehzahl steigt, wenn die Räder auf dem Feld einsinken und durchdrehen
   - Neu: Liquid-Lime-Unterstützung — der Feld-Dialog zeigt Flüssigkalk an, wenn der Liquid-Lime-Mod installiert ist
   - Verbessert: Geräte-Staub verschwindet jetzt allmählich, statt beim Arbeitsende sofort abzubrechen
@@ -151,17 +173,31 @@ Fonctionnalités:
 • Mode Azote organique: Bascule le calcul des engrais organiques entre cible sol et cible plante (PF uniquement)
 • Compatible multijoueur: Les calculs sont effectués sur le serveur puis transmis en cache aux clients
 • Pulvérisateur de boue: Des particules de boue sèche/humide jaillissent de chaque roue motrice au contact du sol, y compris hors champ
-• Destruction hors-champ: Les roues écrasent également l'herbe/prairie en bordure de champ, prairies et cours — sans endommager les cultures des champs voisins
+• Destruction hors-champ: Les roues écrasent l'herbe et les prairies hors champ sur vos propres terres (bordures, prairies, cours) — plus vous allez vite, plus elles sont écrasées ; au pas, elles restent debout
 • Réglages en jeu: Toutes les fonctionnalités physiques peuvent être activées/désactivées dans Options → Réglages généraux
 • Mécanique de la poussière: Ajustez les effets de poussière des outils (charrue, cultivateur, moissonneuse, faucheuse, roues, etc.) via un multiplicateur global ou désactivez-les entièrement
-• Labour réaliste: Quand un côté du tracteur s'enfonce dans un sillon, les roues du côté bas reçoivent un collider plus étroit et un amortissement renforcé pour réduire les rebonds arcade
+• Labour réaliste: Quand un côté du tracteur s'enfonce dans un sillon, les roues du côté bas reçoivent un collider plus étroit et un amortissement renforcé pour réduire les rebonds arcade. Toute roue roulant au fond d'un sillon voit aussi son collider fortement aminci pour que les parois du sillon ne l'accrochent pas
 • Physique réaliste des roues: Le patinage des roues sur les champs peint la texture cultivateur, déforme le terrain en sillons proportionnels, réduit l'adhérence sur sol humide, fait s'enfoncer les roues et amortit la suspension. Gates intelligents : diff/4x4 réduit les dégâts, pneus larges/chenilles réduisent les dégâts, véhicules lourds/humides abaissent le seuil
+• Reprise de la paille : Une moissonneuse-batteuse en battage, coupe abaissée sur un andain de paille existant, le reprend, le fait passer dans la machine et le redépose en andain à l'arrière (ou le broie et l'étale avec le broyeur engagé)
+• Dégâts aux cultures selon la vitesse : Les roues n'écrasent plus les cultures en tout-ou-rien. Au pas, la culture reste debout ; plus vous allez vite, plus elle est écrasée. Les pneus larges, les virages serrés, le sol humide et les machines lourdes font plus de dégâts ; les pneus d'entretien n'écrasent jamais rien
+• Projections d'eau sur route : Les pneus projettent de l'eau sur l'asphalte, le béton et les ponts mouillés. Elles augmentent avec la vitesse, l'humidité de la route et la pluie, et les pneus larges en projettent davantage
+• Distance réaliste du son moteur : Les moteurs portent beaucoup plus loin (les gros encore plus), s'atténuent comme un vrai son, sont étouffés au loin ou derrière collines et bâtiments, et changent de hauteur en vous croisant
+• Voisins : Jusqu'à 10 agriculteurs voisins prennent les contrats de champ ouverts et les exécutent avec leurs propres machines et ouvriers, pour une carte plus vivante (désactivé par défaut)
 • HUD FarmKit: Affichage du patinage en pourcentage près du compteur, code couleur vert/jaune/rouge
 • Support multilingue: Disponible en 3 langues
 
 Appuyez sur Maj Droite + F pour ouvrir les FarmKit.
 
 Historique des versions:
+• 1.0.0.3
+  - Nouveau : option « Voisins » (désactivé, 1–10 ; limite fixe de 10) — des agriculteurs voisins prennent les contrats de champ ouverts, amènent les machines de location au champ, attellent et mettent un ouvrier au travail. Semences, engrais, herbicide et carburant sont gratuits pour eux, les récolteuses ne s'arrêtent jamais pleines, et une fois le travail terminé le contrat est clôturé et les machines repartent. Ils vous laissent toujours au moins 3 contrats ouverts, ne démarrent jamais sous vos yeux, ne prennent jamais vos derniers ouvriers libres et ne comptent pas dans votre limite d'ouvriers. Leur rémunération va à leur propre ferme cachée, pas à la vôtre. Désactivé par défaut ; chaque voisin actif coûte un peu de performances
+  - Nouveau : option « Distance réaliste du son moteur » — les sons du moteur, de la boîte et du ralentisseur portent désormais de 180 à 380 m selon la puissance du moteur, au lieu de se couper de près. Le volume décroît comme un vrai son qui se propage et s'estompe en douceur en limite de portée ; les moteurs lointains perdent leurs aigus, ceux derrière des collines, bâtiments ou autres objets solides sont davantage étouffés, et les véhicules qui passent changent de hauteur (Doppler, basé sur le temps réel donc correct avec l'accélération du temps). Désactiver l'option rétablit les portées d'origine
+  - Nouveau : option « Projections d'eau sur route » — tous les véhicules à roues et remorques projettent de l'eau depuis leurs pneus sur les surfaces dures mouillées : asphalte, béton, ponts et autres routes objets. À partir d'environ 12 km/h, plus fort avec la vitesse, l'humidité de la route et la pluie en cours ; les pneus larges en projettent davantage. Projette dans le bon sens en marche arrière, inactif sur la terre (le projecteur de boue s'en charge) et sur la neige. Purement visuel, donc aucun trafic multijoueur supplémentaire
+  - Nouveau : option « Dégâts aux cultures selon la vitesse » — remplace la destruction des cultures par les roues en tout-ou-rien. En dessous de 5 km/h, les cultures ne sont jamais écrasées ; au-delà, la probabilité augmente progressivement et devient quasi certaine vers 40 km/h. La largeur des pneus, le braquage, l'humidité du sol et le poids du véhicule l'augmentent ; comme dans le jeu de base, les pneus d'entretien n'écrasent jamais les cultures. Chaque parcelle de sol a une résistance fixe : les dégâts sont irréguliers et naturels, et repasser lentement au même endroit ne détruit pas progressivement la culture. S'applique uniquement si le réglage Destruction des cultures du jeu est activé
+  - Nouveau : option « Reprise de la paille » — une moissonneuse-batteuse en battage, coupe abaissée sur un andain de paille, reprend désormais cette paille. Elle met quelques secondes à traverser la machine puis ressort en nouvel andain à l'arrière. Avec le broyeur engagé, la paille est broyée et étalée. Respecte l'accès aux champs : aucune paille n'est reprise sur les terres que vous ne pouvez pas travailler
+  - Nouveau : Détection du sillon roue par roue pour le Labour réaliste — chaque roue est vérifiée individuellement pour savoir si elle roule sous le niveau du sol environnant. Une roue dans le sillon reçoit un collider fin et un amortissement plus ferme pour suivre le sillon au lieu de grimper et rebondir sur ses parois. Transition douce, avec des profondeurs d'entrée/sortie distinctes pour éviter le scintillement en bord de sillon
+  - Corrigé : l'écrasement de l'herbe par la Physique du sol ne s'exécutait jamais. Les roues écrasent désormais l'herbe et les prairies hors champ sur vos propres terres (cours, bordures, prairies), selon la même courbe de vitesse que les Dégâts aux cultures selon la vitesse — au pas, elle reste debout. L'herbe écrasée repousse. Les champs de prairie ne sont pas touchés
+  - Supprimé : Chaîne de remorquage — les trois chaînes de remorquage de la boutique, leurs raccourcis et le menu de réglages de la chaîne ont été supprimés. Les chaînes présentes dans les sauvegardes existantes seront retirées au chargement
 • 1.0.0.2
   - Nouveau : option « Transport réaliste » — les remorques perdent vraiment leur chargement lorsqu'elles basculent au-delà de 15° (virages serrés, basculements en terrain accidenté, retournements). Une bâche fermée offre 15° de marge supplémentaire et cède au-delà de 60°. ~70 % du volume déversé tombe au sol sous forme d'un tas récupérable ; ~30 % est perdu par dispersion. Décharge dépendante de la vitesse lors d'un basculement intentionnel : à l'arrêt forme un tas serré sous la goulotte, un basculement rapide projette la matière plus loin. Matières solides uniquement (céréales, engrais, chaux, fumier, ensilage, etc.).
   - Nouveau : Multiplicateur poussière outils — deuxième curseur dans les réglages qui ajuste uniquement la poussière des outils tractés/attelés (charrue, cultivateur, semoir, rouleau, désherbeur, faucheuse, broyeur, andaineur, presse, coupe de moissonneuse/ensileuse). S'applique par-dessus le multiplicateur global. La poussière des roues, le hacheur de moissonneuse, le nettoyage et le corps de l'ensileuse suivent uniquement le curseur global.
@@ -174,15 +210,12 @@ Historique des versions:
   - Amélioré : Multiplicateur gel/dégel par bandes — sol profondément gelé (×0,3) difficile à marquer ; la bande de dégel juste au-dessus de 0 °C (×1,8) devient de la bouillie
   - Amélioré : Boost d'enfoncement selon le taux de remplissage — les remorques entièrement chargées s'enfoncent jusqu'à 60 % de plus dans un sol mou que les vides
   - Amélioré : HUD repositionné en haut à droite à côté de la bande date/heure — patinage des roues en %, humidité du sol en % avec icône goutte, précipitations en % avec icône nuage de pluie, compte à rebours jusqu'au prochain ou actuel événement de pluie/neige/grêle avec son type, badge rouge [STUCK] quand le véhicule contrôlé est embourbé au point de nécessiter un remorquage
-  - Amélioré : Page de touches de la chaîne de remorquage nettoyée — les actions non liées de déplacement du crochet, de télécommande du véhicule remorqué et de réglages n'encombrent plus Options → Commandes (l'attache de base sur X reste visible et réassignable)
   - Corrigé : la poussière des outils ne s'arrête plus brutalement en fin de travail — l'émission et la durée de vie des particules s'estompent en douceur sur la fenêtre de fondu propre à chaque outil
   - Corrigé : les véhicules à l'arrêt n'émettent plus de poussière « par défaut » après l'arrêt
   - Corrigé : la descente en roue libre ne bloque plus les roues et n'arrête plus le tracteur net — la traînée visqueuse de boue ne se déclenche qu'avec une accélération positive et s'auto-annule à chaque frame
   - Corrigé : la jauge de patinage ne reste plus bloquée à 95 % lorsque des ouvriers IA ou des roues de remorque sont à proximité — le tracker se limite désormais strictement aux roues motrices du véhicule contrôlé en contact avec le sol
   - Supprimé : Décapage des cultures sous les roues qui patinent — en traversant ses propres cultures, les ornières ne révèlent plus de sol cultivé nu (la déformation du terrain et les dégâts foliaires uniquement gèrent désormais le réalisme)
 • 1.0.0.1
-  - Nouveau : Chaîne de remorquage — trois chaînes de remorquage achetables (1,5 m, 2,5 m, 3,5 m) dans la boutique sous Divers, pour sortir les véhicules embourbés
-    Utilisation : connectez l'extrémité ROUGE de la chaîne au véhicule à remorquer, puis reculez votre tracteur de remorquage jusqu'à l'autre extrémité de la chaîne et attachez-la. Appuyez à nouveau sur la touche d'attache pour détacher.
   - Nouveau : option « Mode moteur réaliste » dans les réglages — le régime moteur monte lorsque les roues s'enfoncent et patinent dans le champ
   - Nouveau : prise en charge de Liquid Lime — la boîte de dialogue des champs affiche la chaux liquide lorsque le mod Liquid Lime est installé
   - Amélioré : la poussière des outils s'estompe désormais progressivement au lieu de s'arrêter net en fin de travail
@@ -211,12 +244,6 @@ Historique des versions:
     <iconFilename>icon_NXFarmKit.dds</iconFilename>
     <multiplayer supported="true" />
 
-    <storeItems>
-        <storeItem xmlFilename="towingChain1m.xml" />
-        <storeItem xmlFilename="towingChain2m.xml" />
-        <storeItem xmlFilename="towingChain3m.xml" />
-    </storeItems>
-
     <extraSourceFiles>
         <sourceFile filename="scripts/NXFarmKit.lua" />
         <sourceFile filename="scripts/NXFarmKitPFBridge.lua" />
@@ -226,54 +253,20 @@ Historique des versions:
         <sourceFile filename="scripts/NXRealisticWheelPhysics.lua" />
         <sourceFile filename="scripts/NXFarmKitHUD.lua" />
         <sourceFile filename="scripts/NXLoadSpill.lua" />
+        <sourceFile filename="scripts/NXStrawRefeed.lua" />
+        <sourceFile filename="scripts/NXCropDamage.lua" />
+        <sourceFile filename="scripts/NXRoadSpray.lua" />
+        <sourceFile filename="scripts/NXEngineSound.lua" />
+        <sourceFile filename="scripts/NXNeighbours.lua" />
         <sourceFile filename="scripts/NXFarmKitSettings.lua" />
     </extraSourceFiles>
 
-    <!-- Towing Chain With Hook by kenny456 & Bullgore — included with permission -->
-    <specializations>
-        <specialization name="towingChainHook" className="FarmKitChainHook" filename="scripts/NXFarmKitChain.lua" />
-    </specializations>
-    <jointTypes>
-        <jointType name="towingHook" />
-    </jointTypes>
-    <vehicleTypes>
-        <type name="towingChainHook" parent="baseAttachable" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
-            <specialization name="towingChainHook" />
-        </type>
-    </vehicleTypes>
-
     <actions>
         <action name="SHOW_FARMKIT_DLG" category="SYSTEM" />
-        <action name="FARMKIT_ATTACH_VEHICLE" category="VEHICLE" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MANUAL_ATTACH" category="ONFOOT" axisType="HALF" displayCategory="PLAYER_INTERACTIVE" ignoreComboMask="false" />
-        <action name="FARMKIT_VEHICLE_THROTTLE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_ATTACH_HOOK" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_SWITCH" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_TOGGLE_STEERING_MODE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_STEER_LEFT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_STEER_RIGHT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_CHANGE_ATTACHED_DIRECTION" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_TRIGGER" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_LEFT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_RIGHT" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_FORWARD" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_BACKWARD" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_UP" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_MOVE_HOOK_DOWN" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_OPEN_MENU" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
-        <action name="FARMKIT_OPEN_MENU_VEHICLE" category="SYSTEM" axisType="HALF" ignoreComboMask="false" />
     </actions>
     <inputBinding>
         <actionBinding action="SHOW_FARMKIT_DLG">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_f" />
-        </actionBinding>
-        <!-- Tow Chain: only the attach action is bound. Settings menu, towed-vehicle
-             remote controls and the hook system are all intentionally left unbound. -->
-        <actionBinding action="FARMKIT_ATTACH_VEHICLE">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_x" />
-        </actionBinding>
-        <actionBinding action="FARMKIT_MANUAL_ATTACH">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_x" />
         </actionBinding>
     </inputBinding>
 </modDesc>

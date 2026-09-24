@@ -605,38 +605,22 @@ function NXFieldPhysicsDensity:findFruitConfigByName(name)
     return nil
 end
 
-function NXFieldPhysicsDensity:applyForcedWheelDestructionStates(fruitType, config)
-    if config == nil or config.sourceState == nil or config.sourceState == "" then return end
-
-    local sourceState = self:getGrowthStateByName(fruitType, config.sourceState)
-    local targetState = self:getGrowthStateByName(fruitType, config.targetState)
-    if sourceState == nil or targetState == nil then return end
-
-    fruitType.minWheelDestructionState = sourceState
-    fruitType.maxWheelDestructionState = sourceState
-    fruitType.wheelDestructionState = targetState
-end
-
+-- Grass and meadow have no "isDestructibleByWheel" states in the base game, only a state
+-- flagged "isDestructedByWheel" (their cut state). We flatten every visible growing state
+-- (state 1 is the invisible regrowth stage) down to that cut state, which then regrows.
 function NXFieldPhysicsDensity:createTarget(fruitType)
     if fruitType == nil then return nil end
 
     local config = self:findFruitConfigByName(fruitType.name)
-    local isForced = config ~= nil and config.forced == true
-
-    if not isForced and fruitType.limitDestructionToField ~= false then
-        return nil
-    end
-
-    if isForced then
-        self:applyForcedWheelDestructionStates(fruitType, config)
-    end
+    if config == nil or config.forced ~= true then return nil end
 
     local densityMapId = fruitType.terrainDataPlaneId
     local startChannel = fruitType.startStateChannel
     local numChannels = fruitType.numStateChannels
-    local minState = fruitType.minWheelDestructionState
-    local maxState = fruitType.maxWheelDestructionState
-    local targetState = fruitType.wheelDestructionState
+    local targetState = self:getGrowthStateByName(fruitType, config.targetState) or fruitType.wheelDestructionState
+    local minState = self:getGrowthStateByName(fruitType, config.sourceState) or 2
+    local maxState = targetState ~= nil and (targetState - 1) or nil
+    if maxState ~= nil and maxState < minState then return nil end
 
     if densityMapId == nil or startChannel == nil or numChannels == nil
         or minState == nil or maxState == nil or targetState == nil then
@@ -704,29 +688,19 @@ end
 function NXFieldPhysicsDensity:applyTargetToArea(target, x0, z0, x1, z1, x2, z2)
     target.modifier:setParallelogramWorldCoords(x0, z0, x1, z1, x2, z2, DensityCoordType.POINT_POINT_POINT)
 
-    local drop = NXFieldPhysicsDensity.SOFTEN_DROP or 3
-    for sourceState = target.minState, target.maxState do
-        target.filter:setValueCompareParams(DensityValueCompareType.EQUAL, sourceState)
-        local softened = math.max(target.targetState, sourceState - drop)
-        target.modifier:executeSet(softened, target.filter)
-    end
+    target.filter:setValueCompareParams(DensityValueCompareType.BETWEEN, target.minState, target.maxState)
+    target.modifier:executeSet(target.targetState, target.filter)
 end
 
 function NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, vehicle)
     if not self.enabled then return end
     if self.SERVER_ONLY and g_server == nil then return end
 
-    if g_farmlandManager ~= nil and g_farmlandManager.getFarmlandAtWorldPosition ~= nil then
-        local px = x1 + x2 - x0
-        local pz = z1 + z2 - z0
-        local cx = (x0 + x1 + x2 + px) * 0.25
-        local cz = (z0 + z1 + z2 + pz) * 0.25
-        local samples = { x0, z0, x1, z1, x2, z2, px, pz, cx, cz }
-        for i = 1, #samples, 2 do
-            if g_farmlandManager:getFarmlandAtWorldPosition(samples[i], samples[i+1]) ~= nil then
-                return
-            end
-        end
+    -- same rule the base game uses for crops: only on land the driving farm owns
+    local farmId = vehicle ~= nil and vehicle.getActiveFarm ~= nil and vehicle:getActiveFarm() or nil
+    if farmId == nil or g_farmlandManager == nil
+        or not g_farmlandManager:getIsOwnedByFarmAtWorldPosition(farmId, (x0 + x1 + x2) / 3, (z0 + z1 + z2) / 3) then
+        return
     end
 
     self:initializeTargets()
@@ -740,9 +714,9 @@ function NXFieldPhysicsDensity:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z
     end
 end
 
-function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt)
+function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt, allowFoliageDestruction)
     local self = NXFieldPhysicsDensity
-    if not self.enabled then return end
+    if not self.enabled or not allowFoliageDestruction then return end
     if self.SERVER_ONLY and g_server == nil then return end
     if wheelDestruction == nil or wheelDestruction.wheel == nil then return end
     if wheelDestruction.isCareWheel then return end
@@ -756,7 +730,9 @@ function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt)
     local wheel = wheelDestruction.wheel
     local physics = wheel.physics
     if physics == nil then return end
-    if WheelContactType ~= nil and physics.contact == WheelContactType.NONE then return end
+    -- off-field terrain only: grassland fields and crops are left to the base game
+    if WheelContactType == nil or physics.contact ~= WheelContactType.GROUND then return end
+    if FieldGroundType ~= nil and physics.densityType ~= FieldGroundType.NONE then return end
 
     for _, destructionNode in ipairs(wheelDestruction.destructionNodes) do
         local repr = wheel.repr
@@ -770,12 +746,23 @@ function NXFieldPhysicsDensity.wheelDestructionUpdate(wheelDestruction, dt)
             local x1, _, z1 = localToWorld(repr, xShift - width, yShift, zShift - length)
             local x2, _, z2 = localToWorld(repr, xShift + width, yShift, zShift + length)
 
-            self:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, vehicle)
+            -- same speed curve and per-patch toughness as Speed-Based Crop Damage
+            local goesDown = true
+            if rawget(_G, "NXCropDamage") ~= nil and NXCropDamage.patchGoesDown ~= nil then
+                goesDown = NXCropDamage.patchGoesDown(wheelDestruction, x0, z0, x1, z1, x2, z2)
+            end
+            if goesDown then
+                self:applyCustomLimitToFieldArea(x0, z0, x1, z1, x2, z2, vehicle)
+            end
         end
     end
 end
 
 function NXFieldPhysicsDensity:installHooks()
+    if self.hooksInstalled then return true end
+    if WheelDestruction == nil or WheelDestruction.update == nil then return false end
+
+    WheelDestruction.update = Utils.appendedFunction(WheelDestruction.update, NXFieldPhysicsDensity.wheelDestructionUpdate)
     self.hooksInstalled = true
     return true
 end

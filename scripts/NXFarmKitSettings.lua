@@ -10,6 +10,11 @@ NXFarmKitSettings.values = {
     wheelPhysicsEnabled     = true,
     realisticEngineEnabled  = true,
     loadSpillEnabled        = true,
+    strawRefeedEnabled      = true,
+    cropDamageEnabled       = true,
+    roadSprayEnabled        = true,
+    engineSoundEnabled      = true,
+    neighboursMax           = 0,
     hudEnabled              = true
 }
 
@@ -22,6 +27,11 @@ NXFarmKitSettings.SETTINGS_ORDER = {
     "wheelPhysicsEnabled",
     "realisticEngineEnabled",
     "loadSpillEnabled",
+    "strawRefeedEnabled",
+    "cropDamageEnabled",
+    "roadSprayEnabled",
+    "engineSoundEnabled",
+    "neighboursMax",
     "hudEnabled"
 }
 
@@ -54,6 +64,15 @@ local function nxBuildMultiplierList()
     return values, strings
 end
 
+local function nxNeighbourList()
+    local values, strings = { 0 }, { g_i18n:getText("nx_setting_off") }
+    for n = 1, 10 do
+        values[#values + 1] = n
+        strings[#strings + 1] = tostring(n)
+    end
+    return values, strings
+end
+
 local function nxOnOffStrings()
     return { g_i18n:getText("nx_setting_on"), g_i18n:getText("nx_setting_off") }
 end
@@ -61,6 +80,7 @@ end
 local function nxEnsureSettings()
     if NXFarmKitSettings.SETTINGS ~= nil then return end
     local multValues, multStrings = nxBuildMultiplierList()
+    local neighbourValues, neighbourStrings = nxNeighbourList()
 
     NXFarmKitSettings.SETTINGS = {
         densityEnabled         = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
@@ -71,6 +91,11 @@ local function nxEnsureSettings()
         wheelPhysicsEnabled    = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
         realisticEngineEnabled = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
         loadSpillEnabled       = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        strawRefeedEnabled     = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        cropDamageEnabled      = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        roadSprayEnabled       = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        engineSoundEnabled     = { default = 1, values = { true, false }, strings = nxOnOffStrings() },
+        neighboursMax          = { default = 1, values = neighbourValues, strings = neighbourStrings },
         hudEnabled             = { default = 1, values = { true, false }, strings = nxOnOffStrings() }
     }
 end
@@ -106,6 +131,30 @@ function NXFarmKitSettings.applyToSubsystems()
 
     if rawget(_G, "NXLoadSpill") ~= nil then
         NXLoadSpill.enabled = v.loadSpillEnabled == true
+    end
+
+    if rawget(_G, "NXStrawRefeed") ~= nil then
+        NXStrawRefeed.enabled = v.strawRefeedEnabled == true
+    end
+
+    if rawget(_G, "NXCropDamage") ~= nil then
+        NXCropDamage.enabled = v.cropDamageEnabled == true
+    end
+
+    if rawget(_G, "NXRoadSpray") ~= nil then
+        NXRoadSpray.enabled = v.roadSprayEnabled == true
+    end
+
+    if rawget(_G, "NXEngineSound") ~= nil then
+        local wanted = v.engineSoundEnabled == true
+        if NXEngineSound.enabled ~= wanted then
+            NXEngineSound.enabled = wanted
+            NXEngineSound.refreshAll()
+        end
+    end
+
+    if rawget(_G, "NXNeighbours") ~= nil then
+        NXNeighbours.maxWorkers = math.max(0, math.min(10, math.floor(v.neighboursMax or 0)))
     end
 
     if rawget(_G, "NXFarmKitHUD") ~= nil then
@@ -164,6 +213,11 @@ function NXFarmKitSettings.load()
     readBool("wheelPhysicsEnabled")
     readBool("realisticEngineEnabled")
     readBool("loadSpillEnabled")
+    readBool("strawRefeedEnabled")
+    readBool("cropDamageEnabled")
+    readBool("roadSprayEnabled")
+    readBool("engineSoundEnabled")
+    readFloat("neighboursMax")
     readBool("hudEnabled")
 
     delete(xml)
@@ -188,6 +242,11 @@ function NXFarmKitSettings.save()
     setXMLBool(xml,  "nx.settings#wheelPhysicsEnabled",    v.wheelPhysicsEnabled    == true)
     setXMLBool(xml,  "nx.settings#realisticEngineEnabled", v.realisticEngineEnabled == true)
     setXMLBool(xml,  "nx.settings#loadSpillEnabled",       v.loadSpillEnabled       == true)
+    setXMLBool(xml,  "nx.settings#strawRefeedEnabled",     v.strawRefeedEnabled     == true)
+    setXMLBool(xml,  "nx.settings#cropDamageEnabled",      v.cropDamageEnabled      == true)
+    setXMLBool(xml,  "nx.settings#roadSprayEnabled",       v.roadSprayEnabled       == true)
+    setXMLBool(xml,  "nx.settings#engineSoundEnabled",     v.engineSoundEnabled     == true)
+    setXMLFloat(xml, "nx.settings#neighboursMax",          v.neighboursMax or 0)
     setXMLBool(xml,  "nx.settings#hudEnabled",             v.hudEnabled             == true)
 
     saveXMLFile(xml)
@@ -222,6 +281,11 @@ function NXFarmKitSettingsEvent:readStream(streamId, connection)
         wheelPhysicsEnabled     = streamReadBool(streamId),
         realisticEngineEnabled  = streamReadBool(streamId),
         loadSpillEnabled        = streamReadBool(streamId),
+        strawRefeedEnabled      = streamReadBool(streamId),
+        cropDamageEnabled       = streamReadBool(streamId),
+        roadSprayEnabled        = streamReadBool(streamId),
+        engineSoundEnabled      = streamReadBool(streamId),
+        neighboursMax           = streamReadUInt8(streamId),
         hudEnabled              = streamReadBool(streamId)
     }
     self:run(connection)
@@ -237,6 +301,11 @@ function NXFarmKitSettingsEvent:writeStream(streamId, connection)
     streamWriteBool(streamId,    v.wheelPhysicsEnabled     == true)
     streamWriteBool(streamId,    v.realisticEngineEnabled  == true)
     streamWriteBool(streamId,    v.loadSpillEnabled        == true)
+    streamWriteBool(streamId,    v.strawRefeedEnabled      == true)
+    streamWriteBool(streamId,    v.cropDamageEnabled       == true)
+    streamWriteBool(streamId,    v.roadSprayEnabled        == true)
+    streamWriteBool(streamId,    v.engineSoundEnabled      == true)
+    streamWriteUInt8(streamId,   math.max(0, math.min(10, math.floor(v.neighboursMax or 0))))
     streamWriteBool(streamId,    v.hudEnabled              == true)
 end
 
